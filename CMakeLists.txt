@@ -7,25 +7,23 @@ set(PATTERNS
     adapter
     bridge
     builder
-    #chain-of-responsibility
-    #command
+    command
     composite
-    #decorator
+    decorator
     facade
     factory
-    #flyweight
-    #interpreter
-    #iterator
-    #mediator
-    #memento
-    #observer
+    flyweight
+    iterator
+    mediator
+    memento
+    observer
     prototype
-    #proxy
+    proxy
     singleton
-    #state
-    #strategy
-    #template-method
-    #visitor
+    state
+    strategy
+    template-method
+    visitor
 )
 
 foreach(_dir IN ITEMS ${PATTERNS})
