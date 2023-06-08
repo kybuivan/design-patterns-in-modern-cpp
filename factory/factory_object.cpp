@@ -1,7 +1,7 @@
 #include <iostream>
 #include <map>
-#include <string>
 #include <memory>
+#include <string>
 
 class Object
 {
@@ -30,7 +30,7 @@ public:
 class ObjectFactory
 {
 public:
-    static std::shared_ptr<Object> createObject(const std::string& type)
+    static std::shared_ptr<Object> createObject(const std::string &type)
     {
         if (type == "A")
         {
@@ -53,7 +53,7 @@ private:
     static std::map<std::string, int> objectCounter;
 
 public:
-    static void trackObject(const std::string& type)
+    static void trackObject(const std::string &type)
     {
         if (objectCounter.count(type) == 0)
         {
@@ -67,9 +67,10 @@ public:
 
     static void printCount()
     {
-        for (auto& item : objectCounter)
+        for (auto &item : objectCounter)
         {
-            std::cout << "Type " << item.first << ": " << item.second << " objects created." << std::endl;
+            std::cout << "Type " << item.first << ": " << item.second << " objects created."
+                      << std::endl;
         }
     }
 };

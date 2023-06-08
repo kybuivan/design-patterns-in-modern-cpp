@@ -1,41 +1,52 @@
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 
 // Forward declarations
-class EventListener {
+class EventListener
+{
 public:
-    virtual void handleEvent(const std::string& eventType, const std::string& eventData) = 0;
+    virtual void handleEvent(const std::string &eventType, const std::string &eventData) = 0;
 };
 
-class EventManager {
+class EventManager
+{
 public:
-    void addListener(EventListener* listener) {
+    void addListener(EventListener *listener)
+    {
         m_listeners.push_back(listener);
     }
 
-    void removeListener(EventListener* listener) {
+    void removeListener(EventListener *listener)
+    {
         auto it = std::find(m_listeners.begin(), m_listeners.end(), listener);
-        if (it != m_listeners.end()) {
+        if (it != m_listeners.end())
+        {
             m_listeners.erase(it);
         }
     }
 
-    void notify(const std::string& eventType, const std::string& eventData) {
-        for (auto listener : m_listeners) {
+    void notify(const std::string &eventType, const std::string &eventData)
+    {
+        for (auto listener : m_listeners)
+        {
             listener->handleEvent(eventType, eventData);
         }
     }
 
 private:
-    std::vector<EventListener*> m_listeners;
+    std::vector<EventListener *> m_listeners;
 };
 
-class Editor {
+class Editor
+{
 public:
-    Editor(EventManager* eventManager) : m_eventManager(eventManager) {}
+    Editor(EventManager *eventManager) : m_eventManager(eventManager)
+    {
+    }
 
-    void openFile(const std::string& filePath) {
+    void openFile(const std::string &filePath)
+    {
         // Open the file
         std::cout << "Opened file: " << filePath << std::endl;
 
@@ -43,7 +54,8 @@ public:
         m_eventManager->notify("fileOpened", filePath);
     }
 
-    void saveFile(const std::string& filePath) {
+    void saveFile(const std::string &filePath)
+    {
         // Save the file
         std::cout << "Saved file: " << filePath << std::endl;
 
@@ -52,26 +64,33 @@ public:
     }
 
 private:
-    EventManager* m_eventManager;
+    EventManager *m_eventManager;
 };
 
-class EmailListener : public EventListener {
+class EmailListener : public EventListener
+{
 public:
-    virtual void handleEvent(const std::string& eventType, const std::string& eventData) override {
-        if (eventType == "fileSaved") {
+    virtual void handleEvent(const std::string &eventType, const std::string &eventData) override
+    {
+        if (eventType == "fileSaved")
+        {
             std::cout << "Email sent: File '" << eventData << "' was saved." << std::endl;
         }
     }
 };
 
-class LoggingListener : public EventListener {
+class LoggingListener : public EventListener
+{
 public:
-    virtual void handleEvent(const std::string& eventType, const std::string& eventData) override {
-        std::cout << "Log entry created: " << eventType << " event with data '" << eventData << "'" << std::endl;
+    virtual void handleEvent(const std::string &eventType, const std::string &eventData) override
+    {
+        std::cout << "Log entry created: " << eventType << " event with data '" << eventData << "'"
+                  << std::endl;
     }
 };
 
-int main() {
+int main()
+{
     // Create the event manager and the editor
     EventManager eventManager;
     Editor editor(&eventManager);

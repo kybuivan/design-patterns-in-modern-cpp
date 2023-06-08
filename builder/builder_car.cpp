@@ -12,7 +12,10 @@ public:
     std::vector<std::string> options;
 
 public:
-    Car(const std::string& make, const std::string& model, int year, const std::vector<std::string>& options)
+    Car(const std::string &make,
+        const std::string &model,
+        int year,
+        const std::vector<std::string> &options)
         : make(make), model(model), year(year), options(options)
     {
     }
@@ -23,7 +26,7 @@ public:
         std::cout << "Model: " << model << std::endl;
         std::cout << "Year: " << year << std::endl;
         std::cout << "Options: ";
-        for (const auto& option : options)
+        for (const auto &option : options)
         {
             std::cout << option << " ";
         }
@@ -38,7 +41,7 @@ public:
     virtual void setMake() = 0;
     virtual void setModel() = 0;
     virtual void setYear() = 0;
-    virtual void addOption(const std::string& option) = 0;
+    virtual void addOption(const std::string &option) = 0;
     virtual Car build() = 0;
 };
 
@@ -49,8 +52,7 @@ private:
     Car car;
 
 public:
-    HondaBuilder()
-    : car{Car("Honda", "", 0, {})}
+    HondaBuilder() : car{Car("Honda", "", 0, {})}
     {
     }
 
@@ -69,7 +71,7 @@ public:
         car.year = 2022;
     }
 
-    void addOption(const std::string& option) override
+    void addOption(const std::string &option) override
     {
         car.options.push_back(option);
     }
@@ -84,11 +86,10 @@ public:
 class CarDirector
 {
 private:
-    CarBuilder& builder;
+    CarBuilder &builder;
 
 public:
-    CarDirector(CarBuilder& builder)
-        : builder(builder)
+    CarDirector(CarBuilder &builder) : builder(builder)
     {
     }
 

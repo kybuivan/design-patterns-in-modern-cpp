@@ -1,0 +1,44 @@
+site_name: Design Patterns
+site_url: https://kybuivan.github.io/design-patterns/
+repo_url: https://github.com/kybuivan/design-patterns
+repo_name: kybuivan/design-patterns
+
+theme:
+  name: material
+
+edit_uri: 'edit/master/docs'
+
+plugins:
+  - search
+
+extra:
+  analytics:
+    provider: google
+    property: UA-109858331-3
+
+copyright: Copyright &copy; kybuivan
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      use_pygments: true
+      linenums: true
+      linenums_style: pymdownx.inline
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets
+  - pymdownx.arithmatex:
+      generic: true
+  - meta
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+extra_javascript:
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://media.ethicalads.io/media/client/ethicalads.min.js
+  - javascripts/extra.js

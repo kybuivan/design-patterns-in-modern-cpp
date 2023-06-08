@@ -1,0 +1,26 @@
+name: Docs Generator
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - uses: actions/cache@v2
+        with:
+          key: ${{ github.ref }}
+          path: .cache
+      - name: Install Mkdocs Material
+        run: pip install mkdocs-material
+      - name: Install Macros for Mkdocs
+        run: pip install mkdocs-macros-plugin
+      - name: Deploy mkdocs to gh-pages branch
+        run: mkdocs gh-deploy --force

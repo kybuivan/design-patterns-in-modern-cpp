@@ -38,10 +38,10 @@ public:
 class TextureFactory
 {
 private:
-    std::map<std::string, Texture*> textures;
+    std::map<std::string, Texture *> textures;
 
 public:
-    Texture* getTexture(std::string textureType)
+    Texture *getTexture(std::string textureType)
     {
         if (textures.find(textureType) == textures.end())
         {
@@ -67,10 +67,10 @@ int main()
 {
     TextureFactory factory;
 
-    Texture* woodTexture = factory.getTexture("Wood");
-    Texture* metalTexture = factory.getTexture("Metal");
-    Texture* grassTexture = factory.getTexture("Grass");
-    Texture* anotherWoodTexture = factory.getTexture("Wood");
+    Texture *woodTexture = factory.getTexture("Wood");
+    Texture *metalTexture = factory.getTexture("Metal");
+    Texture *grassTexture = factory.getTexture("Grass");
+    Texture *anotherWoodTexture = factory.getTexture("Wood");
 
     woodTexture->render();
     metalTexture->render();

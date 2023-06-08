@@ -44,16 +44,16 @@ public:
 class VehicleFactory
 {
 public:
-    static Vehicle* createVehicle(VehicleType type)
+    static Vehicle *createVehicle(VehicleType type)
     {
-        switch(type)
+        switch (type)
         {
-            case VehicleType::CAR:
-                return new Car;
-            case VehicleType::TRUCK:
-                return new Truck;
-            case VehicleType::BIKE:
-                return new Bike;
+        case VehicleType::CAR:
+            return new Car;
+        case VehicleType::TRUCK:
+            return new Truck;
+        case VehicleType::BIKE:
+            return new Bike;
         }
         return nullptr;
     }
@@ -62,7 +62,7 @@ public:
 int main()
 {
     VehicleType type = VehicleType::CAR;
-    Vehicle* vehicle = VehicleFactory::createVehicle(type);
+    Vehicle *vehicle = VehicleFactory::createVehicle(type);
     vehicle->printVehicleType();
     return 0;
 }

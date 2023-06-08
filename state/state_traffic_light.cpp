@@ -1,50 +1,63 @@
 #include <iostream>
 using namespace std;
 
-class State {
+class State
+{
 public:
     virtual void signal() = 0;
 };
 
-class Red : public State {
+class Red : public State
+{
 public:
-    void signal() {
+    void signal()
+    {
         cout << "Stop" << endl;
     }
 };
 
-class Yellow : public State {
+class Yellow : public State
+{
 public:
-    void signal() {
+    void signal()
+    {
         cout << "Slow down" << endl;
     }
 };
 
-class Green : public State {
+class Green : public State
+{
 public:
-    void signal() {
+    void signal()
+    {
         cout << "Go" << endl;
     }
 };
 
-class TrafficLight {
+class TrafficLight
+{
 private:
     State *currentState;
+
 public:
-    TrafficLight() {
+    TrafficLight()
+    {
         currentState = new Red;
     }
 
-    void changeState(State *state) {
+    void changeState(State *state)
+    {
         currentState = state;
     }
 
-    void signal() {
+    void signal()
+    {
         currentState->signal();
     }
 };
 
-int main() {
+int main()
+{
     TrafficLight *trafficLight = new TrafficLight;
 
     trafficLight->signal();

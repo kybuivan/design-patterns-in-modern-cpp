@@ -10,17 +10,17 @@ private:
     std::string partC;
 
 public:
-    void setPartA(const std::string& partA)
+    void setPartA(const std::string &partA)
     {
         this->partA = partA;
     }
 
-    void setPartB(const std::string& partB)
+    void setPartB(const std::string &partB)
     {
         this->partB = partB;
     }
 
-    void setPartC(const std::string& partC)
+    void setPartC(const std::string &partC)
     {
         this->partC = partC;
     }
@@ -34,17 +34,19 @@ public:
 class Builder
 {
 public:
-    virtual ~Builder() {}
+    virtual ~Builder()
+    {
+    }
     virtual void buildPartA() = 0;
     virtual void buildPartB() = 0;
     virtual void buildPartC() = 0;
-    virtual Product* getProduct() = 0;
+    virtual Product *getProduct() = 0;
 };
 
 class ConcreteBuilder1 : public Builder
 {
 private:
-    Product* product;
+    Product *product;
 
 public:
     ConcreteBuilder1()
@@ -67,7 +69,7 @@ public:
         product->setPartC("PartC1");
     }
 
-    Product* getProduct()
+    Product *getProduct()
     {
         return product;
     }
@@ -76,7 +78,7 @@ public:
 class ConcreteBuilder2 : public Builder
 {
 private:
-    Product* product;
+    Product *product;
 
 public:
     ConcreteBuilder2()
@@ -99,7 +101,7 @@ public:
         product->setPartC("PartC2");
     }
 
-    Product* getProduct()
+    Product *getProduct()
     {
         return product;
     }
@@ -108,10 +110,10 @@ public:
 class Director
 {
 private:
-    Builder* builder;
+    Builder *builder;
 
 public:
-    void setBuilder(Builder* builder)
+    void setBuilder(Builder *builder)
     {
         this->builder = builder;
     }
@@ -131,25 +133,25 @@ public:
 
 int main()
 {
-    Director* director = new Director();
-    Builder* builder1 = new ConcreteBuilder1();
-    Builder* builder2 = new ConcreteBuilder2();
+    Director *director = new Director();
+    Builder *builder1 = new ConcreteBuilder1();
+    Builder *builder2 = new ConcreteBuilder2();
 
     director->setBuilder(builder1);
     director->buildMinimalViableProduct();
-    Product* product1 = builder1->getProduct();
+    Product *product1 = builder1->getProduct();
     product1->show();
 
     director->setBuilder(builder2);
     director->buildFullFeaturedProduct();
-    Product* product2 = builder2->getProduct();
-	product2->show();
-	
-	delete product1;
-	delete product2;
-	delete builder1;
-	delete builder2;
-	delete director;
+    Product *product2 = builder2->getProduct();
+    product2->show();
 
-	return 0;
+    delete product1;
+    delete product2;
+    delete builder1;
+    delete builder2;
+    delete director;
+
+    return 0;
 }

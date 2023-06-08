@@ -1,62 +1,78 @@
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 
 using namespace std;
 
 class Subject;
 
-class Observer {
+class Observer
+{
 public:
     virtual void update(Subject *subject) = 0;
 };
 
-class Subject {
-    vector<Observer*> observers;
+class Subject
+{
+    vector<Observer *> observers;
     string state;
+
 public:
-    void attach(Observer* observer) {
+    void attach(Observer *observer)
+    {
         observers.push_back(observer);
     }
 
-    void detach(Observer* observer) {
-        for (auto it = observers.begin(); it != observers.end(); it++) {
-            if (*it == observer) {
+    void detach(Observer *observer)
+    {
+        for (auto it = observers.begin(); it != observers.end(); it++)
+        {
+            if (*it == observer)
+            {
                 observers.erase(it);
                 break;
             }
         }
     }
 
-    void notify() {
-        for (auto observer : observers) {
+    void notify()
+    {
+        for (auto observer : observers)
+        {
             observer->update(this);
         }
     }
 
-    void setState(string state) {
+    void setState(string state)
+    {
         this->state = state;
         notify();
     }
 
-    string getState() const {
+    string getState() const
+    {
         return state;
     }
 };
 
-class Textbox : public Observer {
+class Textbox : public Observer
+{
     string name;
+
 public:
-    Textbox(string name) {
+    Textbox(string name)
+    {
         this->name = name;
     }
 
-    void update(Subject *subject) override {
+    void update(Subject *subject) override
+    {
         cout << name << " updated with new state: " << subject->getState() << endl;
     }
 };
 
-int main() {
+int main()
+{
     Subject subject;
     Textbox textbox1("Textbox 1");
     Textbox textbox2("Textbox 2");

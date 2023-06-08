@@ -3,49 +3,64 @@
 
 using namespace std;
 
-class Game {
+class Game
+{
 public:
     virtual void start() = 0;
     virtual void play() = 0;
     virtual void end() = 0;
-    void run() {
+    void run()
+    {
         start();
-        while (isPlaying()) {
+        while (isPlaying())
+        {
             play();
         }
         end();
     }
-    virtual bool isPlaying() { return true; }
+    virtual bool isPlaying()
+    {
+        return true;
+    }
 };
 
-class Chess : public Game {
+class Chess : public Game
+{
 public:
-    void start() override {
+    void start() override
+    {
         cout << "Starting a game of Chess" << endl;
     }
-    void play() override {
+    void play() override
+    {
         cout << "Playing Chess" << endl;
     }
-    void end() override {
+    void end() override
+    {
         cout << "Ending a game of Chess" << endl;
     }
 };
 
-class Checkers : public Game {
+class Checkers : public Game
+{
 public:
-    void start() override {
+    void start() override
+    {
         cout << "Starting a game of Checkers" << endl;
     }
-    void play() override {
+    void play() override
+    {
         cout << "Playing Checkers" << endl;
     }
-    void end() override {
+    void end() override
+    {
         cout << "Ending a game of Checkers" << endl;
     }
 };
 
-int main() {
-    Game* game = new Chess();
+int main()
+{
+    Game *game = new Chess();
     game->run();
 
     cout << endl;

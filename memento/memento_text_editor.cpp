@@ -3,11 +3,15 @@
 #include <vector>
 
 // Memento class
-class EditorMemento {
+class EditorMemento
+{
 public:
-    explicit EditorMemento(const std::string& text) : text_(text) {}
+    explicit EditorMemento(const std::string &text) : text_(text)
+    {
+    }
 
-    std::string getText() const {
+    std::string getText() const
+    {
         return text_;
     }
 
@@ -16,21 +20,26 @@ private:
 };
 
 // Originator class
-class Editor {
+class Editor
+{
 public:
-    void setText(const std::string& text) {
+    void setText(const std::string &text)
+    {
         text_ = text;
     }
 
-    std::string getText() const {
+    std::string getText() const
+    {
         return text_;
     }
 
-    EditorMemento createMemento() const {
+    EditorMemento createMemento() const
+    {
         return EditorMemento(text_);
     }
 
-    void restoreMemento(const EditorMemento& memento) {
+    void restoreMemento(const EditorMemento &memento)
+    {
         text_ = memento.getText();
     }
 
@@ -39,13 +48,16 @@ private:
 };
 
 // Caretaker class
-class History {
+class History
+{
 public:
-    void addMemento(const EditorMemento& memento) {
+    void addMemento(const EditorMemento &memento)
+    {
         mementos_.push_back(memento);
     }
 
-    EditorMemento getMemento(int index) const {
+    EditorMemento getMemento(int index) const
+    {
         return mementos_.at(index);
     }
 
@@ -54,7 +66,8 @@ private:
 };
 
 // Client code
-int main() {
+int main()
+{
     Editor editor;
     History history;
 

@@ -3,25 +3,32 @@
 #include <vector>
 
 // Originator class
-class Document {
+class Document
+{
 public:
-    Document(std::string name) : name_(name) {}
+    Document(std::string name) : name_(name)
+    {
+    }
 
-    void set_content(const std::string& content) {
+    void set_content(const std::string &content)
+    {
         content_ = content;
     }
 
-    std::string get_content() const {
+    std::string get_content() const
+    {
         return content_;
     }
 
     // Save current state of the Document object
-    std::vector<std::string> save_state() {
-        return { name_, content_ };
+    std::vector<std::string> save_state()
+    {
+        return {name_, content_};
     }
 
     // Restore state of the Document object to a previous state
-    void restore_state(const std::vector<std::string>& state) {
+    void restore_state(const std::vector<std::string> &state)
+    {
         name_ = state[0];
         content_ = state[1];
     }
@@ -32,16 +39,20 @@ private:
 };
 
 // Caretaker class
-class DocumentHistory {
+class DocumentHistory
+{
 public:
     // Save the state of the Document object
-    void save(Document& document) {
+    void save(Document &document)
+    {
         history_.push_back(document.save_state());
     }
 
     // Restore the state of the Document object to a previous state
-    void undo(Document& document) {
-        if (history_.empty()) {
+    void undo(Document &document)
+    {
+        if (history_.empty())
+        {
             std::cout << "Nothing to undo." << std::endl;
             return;
         }
@@ -56,7 +67,8 @@ private:
 };
 
 // Client code
-int main() {
+int main()
+{
     Document document("My Document");
     DocumentHistory history;
 

@@ -1,17 +1,19 @@
 #include <iostream>
 #include <string>
 
-template<typename T>
+template <typename T>
 class Singleton
 {
 private:
-    static T* instance;
+    static T *instance;
 
 protected:
-    Singleton() {}
+    Singleton()
+    {
+    }
 
 public:
-    static T* getInstance()
+    static T *getInstance()
     {
         if (!instance)
         {
@@ -22,7 +24,8 @@ public:
     }
 };
 
-template<typename T> T* Singleton<T>::instance = nullptr;
+template <typename T>
+T *Singleton<T>::instance = nullptr;
 
 class Config : public Singleton<Config>
 {
@@ -31,17 +34,29 @@ private:
     std::string host;
 
 public:
-    int getPort() const { return port; }
-    void setPort(int p) { port = p; }
+    int getPort() const
+    {
+        return port;
+    }
+    void setPort(int p)
+    {
+        port = p;
+    }
 
-    std::string getHost() const { return host; }
-    void setHost(const std::string& h) { host = h; }
+    std::string getHost() const
+    {
+        return host;
+    }
+    void setHost(const std::string &h)
+    {
+        host = h;
+    }
 };
 
 class Logger : public Singleton<Logger>
 {
 public:
-    void log(const std::string& msg)
+    void log(const std::string &msg)
     {
         std::cout << "Log: " << msg << std::endl;
     }
@@ -49,11 +64,11 @@ public:
 
 int main()
 {
-    Config* config = Config::getInstance();
+    Config *config = Config::getInstance();
     config->setHost("localhost");
     config->setPort(8080);
 
-    Logger* logger = Logger::getInstance();
+    Logger *logger = Logger::getInstance();
     logger->log("Application started");
 
     return 0;

@@ -1,5 +1,5 @@
-#include <iostream>
 #include <functional>
+#include <iostream>
 #include <map>
 
 class Drink
@@ -11,25 +11,34 @@ public:
 class Coffee : public Drink
 {
 public:
-    std::string name() const override { return "Coffee"; }
+    std::string name() const override
+    {
+        return "Coffee";
+    }
 };
 
 class Tea : public Drink
 {
 public:
-    std::string name() const override { return "Tea"; }
+    std::string name() const override
+    {
+        return "Tea";
+    }
 };
 
 class Juice : public Drink
 {
 public:
-    std::string name() const override { return "Juice"; }
+    std::string name() const override
+    {
+        return "Juice";
+    }
 };
 
 using DrinkFactory = std::function<std::unique_ptr<Drink>()>;
 std::map<std::string, DrinkFactory> drink_factories;
 
-void register_drink(const std::string& name, DrinkFactory factory)
+void register_drink(const std::string &name, DrinkFactory factory)
 {
     drink_factories[name] = factory;
 }

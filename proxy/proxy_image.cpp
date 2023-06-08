@@ -1,48 +1,58 @@
 #include <iostream>
 #include <string>
 
-class Image {
+class Image
+{
 public:
     virtual void display() = 0;
 };
 
-class RealImage : public Image {
+class RealImage : public Image
+{
 private:
     std::string file;
 
 public:
-    RealImage(std::string file) : file(file) {
+    RealImage(std::string file) : file(file)
+    {
         loadFromDisk(file);
     }
 
-    void display() {
+    void display()
+    {
         std::cout << "Displaying " << file << std::endl;
     }
 
-    void loadFromDisk(std::string file) {
+    void loadFromDisk(std::string file)
+    {
         std::cout << "Loading " << file << " from disk" << std::endl;
     }
 };
 
-class ProxyImage : public Image {
+class ProxyImage : public Image
+{
 private:
     RealImage *realImage;
     std::string file;
 
 public:
-    ProxyImage(std::string file) : file(file) {
+    ProxyImage(std::string file) : file(file)
+    {
         realImage = nullptr;
     }
 
-    void display() {
-        if (!realImage) {
+    void display()
+    {
+        if (!realImage)
+        {
             realImage = new RealImage(file);
         }
         realImage->display();
     }
 };
 
-int main() {
+int main()
+{
     Image *image = new ProxyImage("test.jpg");
     image->display();
 

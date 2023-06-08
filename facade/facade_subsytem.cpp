@@ -27,8 +27,8 @@ class Facade
 {
 private:
     // Declare pointers to objects of the SubsystemA and SubsystemB classes
-    SubsystemA* subsystemA;
-    SubsystemB* subsystemB;
+    SubsystemA *subsystemA;
+    SubsystemB *subsystemB;
 
 public:
     // Constructor for the Facade class
@@ -51,7 +51,7 @@ public:
 int main()
 {
     // Create an object of the Facade class
-    Facade* facade = new Facade();
+    Facade *facade = new Facade();
 
     // Call the operation function of the Facade object
     facade->operation();

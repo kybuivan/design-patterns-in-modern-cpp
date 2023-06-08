@@ -5,50 +5,63 @@ class Component;
 
 class Mediator
 {
-  public:
+public:
     virtual void notify(Component *sender, const std::string &event) = 0;
 };
 
 // Abstract Component
-class Component {
+class Component
+{
 public:
-    virtual ~Component() {}
+    virtual ~Component()
+    {
+    }
 
-    Component(Mediator* dialog) : dialog(dialog) {}
+    Component(Mediator *dialog) : dialog(dialog)
+    {
+    }
 
-    virtual void click() {
+    virtual void click()
+    {
         dialog->notify(this, "click");
     }
 
-    virtual void keypress() {
+    virtual void keypress()
+    {
         dialog->notify(this, "keypress");
     }
 
 protected:
-    Mediator* dialog;
+    Mediator *dialog;
 };
 
 class Button : public Component
 {
-  public:
-    Button(Mediator *dialog) : Component(dialog) {}
+public:
+    Button(Mediator *dialog) : Component(dialog)
+    {
+    }
 };
 
 class Textbox : public Component
 {
-  public:
-    Textbox(Mediator *dialog) : Component(dialog) {}
+public:
+    Textbox(Mediator *dialog) : Component(dialog)
+    {
+    }
 };
 
 class Checkbox : public Component
 {
-  public:
-  	bool checked;
-    Checkbox(Mediator *dialog) : Component(dialog), checked (false) {}
+public:
+    bool checked;
+    Checkbox(Mediator *dialog) : Component(dialog), checked(false)
+    {
+    }
 
     void check()
     {
-		checked = !checked;
+        checked = !checked;
         dialog->notify(this, "check");
     }
     void keypress(){};
@@ -57,7 +70,7 @@ class Checkbox : public Component
 
 class AuthenticationDialog : public Mediator
 {
-  public:
+public:
     AuthenticationDialog()
     {
         title = "Login";
@@ -87,20 +100,20 @@ class AuthenticationDialog : public Mediator
                 // 1. Show registration form components.
                 // 2. Hide login form components
             }
-			std::cout << title << std::endl;
+            std::cout << title << std::endl;
         }
 
         if (sender == okBtn && event == "click")
         {
             if (loginOrRegisterChkBx->checked)
             {
-				bool found;
+                bool found;
                 // Try to find a user using login credentials.
                 if (!found)
                 {
                     // Show an error message above the login field.
                 }
-				std::cout << "loginOrRegisterChkBx click" << std::endl;
+                std::cout << "loginOrRegisterChkBx click" << std::endl;
             }
             else
             {
@@ -111,7 +124,7 @@ class AuthenticationDialog : public Mediator
         }
     }
 
-  public:
+public:
     std::string title;
     Checkbox *loginOrRegisterChkBx;
     Textbox *loginUsername;
@@ -123,9 +136,10 @@ class AuthenticationDialog : public Mediator
     Button *cancelBtn;
 };
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
     // Create the authentication dialog with all its components
-    AuthenticationDialog* dialog = new AuthenticationDialog();
+    AuthenticationDialog *dialog = new AuthenticationDialog();
 
     // Simulate user interaction by clicking the checkboxes, filling
     // in fields, and clicking the buttons.

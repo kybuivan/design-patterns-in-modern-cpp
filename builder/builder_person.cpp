@@ -11,7 +11,7 @@ public:
     std::string job;
 
 public:
-    Person(const std::string& name, const std::string& address, const std::string& job)
+    Person(const std::string &name, const std::string &address, const std::string &job)
         : name(name), address(address), job(job)
     {
     }
@@ -31,8 +31,7 @@ protected:
     Person person;
 
 public:
-    PersonBuilder(const std::string& name)
-    : person{Person(name, "", "")}
+    PersonBuilder(const std::string &name) : person{Person(name, "", "")}
     {
     }
 
@@ -48,18 +47,17 @@ public:
 class AddressBuilder : public PersonBuilder
 {
 public:
-    AddressBuilder(const std::string& name)
-        : PersonBuilder(name)
+    AddressBuilder(const std::string &name) : PersonBuilder(name)
     {
     }
 
-    AddressBuilder& at(const std::string& address)
+    AddressBuilder &at(const std::string &address)
     {
         person.address = address;
         return *this;
     }
 
-    AddressBuilder& withPostcode(const std::string& postcode)
+    AddressBuilder &withPostcode(const std::string &postcode)
     {
         person.address = person.address + " " + postcode;
         return *this;
@@ -70,12 +68,11 @@ public:
 class JobBuilder : public PersonBuilder
 {
 public:
-    JobBuilder(const std::string& name)
-        : PersonBuilder(name)
+    JobBuilder(const std::string &name) : PersonBuilder(name)
     {
     }
 
-    JobBuilder& worksAsA(const std::string& job)
+    JobBuilder &worksAsA(const std::string &job)
     {
         person.job = job;
         return *this;
@@ -88,7 +85,8 @@ int main()
     Person person = PersonBuilder("John").getPerson();
     person.show();
 
-    Person johnDoe = AddressBuilder("John Doe").at("123 Main St.").withPostcode("11111").getPerson();
+    Person johnDoe =
+        AddressBuilder("John Doe").at("123 Main St.").withPostcode("11111").getPerson();
     johnDoe.show();
 
     Person janeDoe = JobBuilder("Jane Doe").worksAsA("Engineer").getPerson();

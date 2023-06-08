@@ -10,7 +10,7 @@ public:
     std::string seats;
 
 public:
-    Vehicle(const std::string& type, const std::string& wheels, const std::string& seats)
+    Vehicle(const std::string &type, const std::string &wheels, const std::string &seats)
         : type(type), wheels(wheels), seats(seats)
     {
     }
@@ -30,8 +30,7 @@ protected:
     Vehicle vehicle;
 
 public:
-    VehicleBuilder()
-        : vehicle("", "", "")
+    VehicleBuilder() : vehicle("", "", "")
     {
     }
 
@@ -71,7 +70,7 @@ public:
 class VehicleFactory
 {
 public:
-    static VehicleBuilder* createVehicle(const std::string& type)
+    static VehicleBuilder *createVehicle(const std::string &type)
     {
         if (type == "Car")
             return new CarBuilder();
@@ -85,11 +84,11 @@ public:
 // Client
 int main()
 {
-    VehicleBuilder* carBuilder = VehicleFactory::createVehicle("Car");
+    VehicleBuilder *carBuilder = VehicleFactory::createVehicle("Car");
     Vehicle car = carBuilder->getVehicle();
     car.show();
 
-    VehicleBuilder* truckBuilder = VehicleFactory::createVehicle("Truck");
+    VehicleBuilder *truckBuilder = VehicleFactory::createVehicle("Truck");
     Vehicle truck = truckBuilder->getVehicle();
     truck.show();
 

@@ -1,31 +1,40 @@
 #include <iostream>
-#include <vector>
 #include <sstream>
+#include <vector>
 
 // Strategy interface
-class ReportFormatter {
+class ReportFormatter
+{
 public:
-    virtual std::string formatReport(const std::vector<int>& data) const = 0;
-    virtual ~ReportFormatter() {}
+    virtual std::string formatReport(const std::vector<int> &data) const = 0;
+    virtual ~ReportFormatter()
+    {
+    }
 };
 
 // Concrete strategy classes
-class CsvReportFormatter : public ReportFormatter {
+class CsvReportFormatter : public ReportFormatter
+{
 public:
-    std::string formatReport(const std::vector<int>& data) const override {
+    std::string formatReport(const std::vector<int> &data) const override
+    {
         std::stringstream ss;
-        for (auto d : data) {
+        for (auto d : data)
+        {
             ss << d << ",";
         }
         return ss.str();
     }
 };
 
-class TabbedReportFormatter : public ReportFormatter {
+class TabbedReportFormatter : public ReportFormatter
+{
 public:
-    std::string formatReport(const std::vector<int>& data) const override {
+    std::string formatReport(const std::vector<int> &data) const override
+    {
         std::stringstream ss;
-        for (auto d : data) {
+        for (auto d : data)
+        {
             ss << d << "\t";
         }
         return ss.str();
@@ -33,24 +42,30 @@ public:
 };
 
 // Context class
-class ReportGenerator {
+class ReportGenerator
+{
 private:
-    ReportFormatter* formatter;
+    ReportFormatter *formatter;
 
 public:
-    ReportGenerator(ReportFormatter* formatter) : formatter(formatter) {}
+    ReportGenerator(ReportFormatter *formatter) : formatter(formatter)
+    {
+    }
 
-    void setFormatter(ReportFormatter* formatter) {
+    void setFormatter(ReportFormatter *formatter)
+    {
         this->formatter = formatter;
     }
 
-    void generateReport(const std::vector<int>& data) {
+    void generateReport(const std::vector<int> &data)
+    {
         std::string formattedData = formatter->formatReport(data);
         std::cout << "Generated report: " << formattedData << std::endl;
     }
 };
 
-int main() {
+int main()
+{
     std::vector<int> data = {1, 2, 3, 4, 5};
 
     CsvReportFormatter csvFormatter;

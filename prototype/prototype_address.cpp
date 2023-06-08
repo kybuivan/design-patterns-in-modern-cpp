@@ -1,20 +1,23 @@
 #include <iostream>
-#include <unordered_map>
-#include <string>
 #include <sstream>
+#include <string>
+#include <unordered_map>
 
 class Address
 {
 public:
     std::string street, city, country;
-    Address() {}
-    Address(const std::string& street, const std::string& city, const std::string& country)
+    Address()
+    {
+    }
+    Address(const std::string &street, const std::string &city, const std::string &country)
         : street(street), city(city), country(country)
     {
     }
-    friend std::ostream& operator<<(std::ostream& os, const Address& obj)
+    friend std::ostream &operator<<(std::ostream &os, const Address &obj)
     {
-        return os << "street: " << obj.street << " city: " << obj.city << " country: " << obj.country;
+        return os << "street: " << obj.street << " city: " << obj.city
+                  << " country: " << obj.country;
     }
 };
 
@@ -22,10 +25,10 @@ class Contact
 {
 private:
     std::string name;
-    Address* work_address;
+    Address *work_address;
 
 public:
-    Contact(const std::string& name, Address* const work_address)
+    Contact(const std::string &name, Address *const work_address)
         : name(name), work_address(new Address(*work_address))
     {
     }
@@ -33,11 +36,10 @@ public:
     {
         delete work_address;
     }
-    Contact(const Contact& other)
-        : name(other.name), work_address(new Address(*other.work_address))
+    Contact(const Contact &other) : name(other.name), work_address(new Address(*other.work_address))
     {
     }
-    Contact& operator=(const Contact& other)
+    Contact &operator=(const Contact &other)
     {
         if (this != &other)
         {
@@ -47,7 +49,7 @@ public:
         }
         return *this;
     }
-    friend std::ostream& operator<<(std::ostream& os, const Contact& obj)
+    friend std::ostream &operator<<(std::ostream &os, const Contact &obj)
     {
         return os << "name: " << obj.name << " work_address: " << *obj.work_address;
     }
@@ -56,22 +58,23 @@ public:
 class ContactPrototypeFactory
 {
 private:
-    std::unordered_map<std::string, Contact*> prototypes;
+    std::unordered_map<std::string, Contact *> prototypes;
 
 public:
     ContactPrototypeFactory()
     {
         prototypes["tom"] = new Contact("tom", new Address("123 London Road", "London", "UK"));
-        prototypes["alice"] = new Contact("alice", new Address("456 Paris Road", "Paris", "France"));
+        prototypes["alice"] =
+            new Contact("alice", new Address("456 Paris Road", "Paris", "France"));
     }
     ~ContactPrototypeFactory()
     {
-        for (const auto& pair : prototypes)
+        for (const auto &pair : prototypes)
         {
             delete pair.second;
         }
     }
-    Contact* create_contact(const std::string& name)
+    Contact *create_contact(const std::string &name)
     {
         auto it = prototypes.find(name);
         if (it == prototypes.end())
