@@ -1,28 +1,9 @@
 #include <iostream>
 #include <memory>
+#include <variant>
 #include <vector>
 
-class Circle;
-class Square;
-
-class ShapeVisitor
-{
-public:
-    virtual ~ShapeVisitor() = default;
-
-    virtual void visit(Circle const & /*, ...*/) const = 0;
-    virtual void visit(Square const & /*, ...*/) const = 0;
-    // Possibly more visit() functions, one for each concrete shape
-};
-
-class Shape
-{
-public:
-    virtual ~Shape() = default;
-    virtual void accept(ShapeVisitor const &v) = 0;
-};
-
-class Circle : public Shape
+class Circle
 {
 public:
     explicit Circle(double radius) : radius_(radius)
@@ -35,16 +16,11 @@ public:
         return radius_;
     }
 
-    void accept(ShapeVisitor const &v) override
-    {
-        v.visit(*this);
-    }
-
 private:
     double radius_;
 };
 
-class Square : public Shape
+class Square
 {
 public:
     explicit Square(double side) : side_(side)
@@ -57,24 +33,18 @@ public:
         return side_;
     }
 
-    void accept(ShapeVisitor const &v) override
-    {
-        v.visit(*this);
-    }
-
 private:
     double side_;
 };
 
-class Draw : public ShapeVisitor
+struct Draw
 {
-public:
-    void visit(Circle const &c /*, ...*/) const override
+    void operator()(Circle const &c /*, ...*/) const
     {
         std::cout << "Drawing a circle with radius: " << c.radius() << std::endl;
     }
 
-    void visit(Square const &s /*, ...*/) const override
+    void operator()(Square const &s /*, ...*/) const
     {
         std::cout << "Drawing a square with side length: " << s.side() << std::endl;
     }
@@ -82,23 +52,24 @@ public:
     // Possibly more visit() functions, one for each concrete shape
 };
 
-void drawAllShapes(std::vector<std::unique_ptr<Shape>> const &shapes)
+using Shape = std::variant<Circle, Square>;
+using Shapes = std::vector<Shape>;
+void drawAllShapes(Shapes const &shapes)
 {
     for (auto const &shape : shapes)
     {
-        shape->accept(Draw{});
+        std::visit(Draw{}, shape);
     }
 }
 
 int main()
 {
-    using Shapes = std::vector<std::unique_ptr<Shape>>;
 
     // Creating some shapes
     Shapes shapes{};
-    shapes.emplace_back(std::make_unique<Circle>(2.3));
-    shapes.emplace_back(std::make_unique<Square>(1.2));
-    shapes.emplace_back(std::make_unique<Circle>(4.1));
+    shapes.emplace_back(Circle(2.3));
+    shapes.emplace_back(Square(1.2));
+    shapes.emplace_back(Circle(4.1));
 
     // Drawing all shapes
     drawAllShapes(shapes);
