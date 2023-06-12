@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(design_patterns)
+project(DesignPatternsInModernCpp LANGUAGES CXX)
+
+enable_testing()
 
 # Global CMake variables are set here
 set(CMAKE_CXX_STANDARD 17)
@@ -46,7 +48,8 @@ foreach(_dir IN ITEMS ${PATTERNS})
         message(STATUS "  ${_dir}/${_file_name} is going to be built")
 
         add_executable(${_project_name} "${_dir}/${_file_name}")
-        target_compile_features(${_project_name} PRIVATE cxx_std_17)  # Add this line
+        target_compile_features(${_project_name} PRIVATE cxx_std_17)
+        add_test(NAME ${_project_name} COMMAND ${_project_name})
     endforeach()
 
 endforeach()

@@ -1,7 +1,7 @@
-site_name: Design Patterns
-site_url: https://kybuivan.github.io/design-patterns/
-repo_url: https://github.com/kybuivan/design-patterns
-repo_name: kybuivan/design-patterns
+site_name: Design Patterns In Modern Cpp
+site_url: https://kybuivan.github.io/design-patterns-in-modern-cpp/
+repo_url: https://github.com/kybuivan/design-patterns-in-modern-cpp
+repo_name: kybuivan/design-patterns-in-modern-cpp
 
 theme:
   name: material

@@ -1,4 +1,4 @@
-# C++ Design Patterns
+# Design Patterns In Modern Cpp
 This repository contains examples of design patterns implemented in C++.
 
 ## List of Design Patterns
@@ -29,11 +29,12 @@ Here's a list of the design patterns available in this repository:
 To use these examples, you can clone this repository to your local machine:
 
 ```bash
-git clone https://github.com/kybuivan/design-patterns-cpp.git
+git clone https://github.com/kybuivan/design-patterns-in-modern-cpp.git
 ```
 
 ## Books
 - C++ Software Design : Design Principles and Patterns for High-Quality Software
+- Design Patterns in Modern C++: Reusable Approaches for Object-Oriented Software Design
 
 ## Contributing
 If you'd like to contribute to this repository, feel free to create a pull request.
