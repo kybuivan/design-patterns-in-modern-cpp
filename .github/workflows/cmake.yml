@@ -1,0 +1,60 @@
+name: cmake
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    strategy:
+      matrix:
+        v: [9, 10, 11, 12]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Ninja for C++ modules
+      run: sudo apt-get install ninja-build
+
+    - run: cmake --workflow --preset default
+      env:
+        CC: gcc-${{ matrix.v }}
+        CXX: g++-${{ matrix.v }}
+
+
+  mac:
+    runs-on: macos-latest
+    timeout-minutes: 5
+
+    env:
+      HOMEBREW_NO_AUTO_CLEANUP: 1
+
+    strategy:
+      matrix:
+        c: [{cc: gcc-12, cxx: g++-12}, {cc: clang, cxx: clang++}]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Ninja for C++ modules
+      run: brew install ninja
+
+    - run: cmake --workflow --preset default
+      env:
+        CC: ${{ matrix.c.cc }}
+        CXX: ${{ matrix.c.cxx }}
+
+
+  windows-msvc:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - run: cmake --workflow --preset msvc
