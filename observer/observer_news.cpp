@@ -1,5 +1,7 @@
+#include <algorithm>
 #include <iostream>
 #include <list>
+#include <memory>
 #include <string>
 
 class Observer
@@ -17,29 +19,42 @@ public:
     virtual ~Subject()
     {
     }
-    virtual void registerObserver(Observer *observer) = 0;
-    virtual void removeObserver(Observer *observer) = 0;
+    virtual void registerObserver(std::weak_ptr<Observer> observer) = 0;
+    virtual void removeObserver(std::weak_ptr<Observer> observer) = 0;
     virtual void notifyObservers(const std::string &message) = 0;
 };
 
 class NewsAgency : public Subject
 {
 public:
-    void registerObserver(Observer *observer) override
+    void registerObserver(std::weak_ptr<Observer> observer) override
     {
         observers_.push_back(observer);
     }
 
-    void removeObserver(Observer *observer) override
+    void removeObserver(std::weak_ptr<Observer> observer) override
     {
-        observers_.remove(observer);
+        auto it = std::find_if(observers_.begin(),
+                               observers_.end(),
+                               [&observer](const std::weak_ptr<Observer> &wp) {
+                                   return !wp.expired() && wp.lock() == observer.lock();
+                               });
+
+        if (it != observers_.end())
+        {
+            observers_.erase(it);
+        }
     }
 
     void notifyObservers(const std::string &message) override
     {
-        for (Observer *observer : observers_)
+        for (auto &weakObserver : observers_)
         {
-            observer->update(message);
+            auto observer = weakObserver.lock();
+            if (observer)
+            {
+                observer->update(message);
+            }
         }
     }
 
@@ -50,7 +65,7 @@ public:
     }
 
 private:
-    std::list<Observer *> observers_;
+    std::list<std::weak_ptr<Observer>> observers_;
     std::string news_;
 };
 
@@ -72,19 +87,19 @@ private:
 
 int main()
 {
-    NewsAgency newsAgency;
+    std::shared_ptr<NewsAgency> newsAgency = std::make_shared<NewsAgency>();
 
-    TVChannel cnn("CNN");
-    TVChannel bbc("BBC");
-    TVChannel fox("FOX");
+    std::shared_ptr<TVChannel> cnn = std::make_shared<TVChannel>("CNN");
+    std::shared_ptr<TVChannel> bbc = std::make_shared<TVChannel>("BBC");
+    std::shared_ptr<TVChannel> fox = std::make_shared<TVChannel>("FOX");
 
-    newsAgency.registerObserver(&cnn);
-    newsAgency.registerObserver(&bbc);
-    newsAgency.registerObserver(&fox);
+    newsAgency->registerObserver(cnn);
+    newsAgency->registerObserver(bbc);
+    newsAgency->registerObserver(fox);
 
-    newsAgency.addNews("COVID-19 vaccine rollout begins");
-    newsAgency.removeObserver(&fox);
-    newsAgency.addNews("Stock market hits record high");
+    newsAgency->addNews("COVID-19 vaccine rollout begins");
+    newsAgency->removeObserver(fox);
+    newsAgency->addNews("Stock market hits record high");
 
     return 0;
 }

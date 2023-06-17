@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -31,7 +32,7 @@ private:
 class DataDecorator : public Data
 {
 public:
-    explicit DataDecorator(Data *data) : data_(data)
+    explicit DataDecorator(std::shared_ptr<Data> data) : data_(data)
     {
     }
 
@@ -41,14 +42,14 @@ public:
     }
 
 protected:
-    Data *data_;
+    std::shared_ptr<Data> data_;
 };
 
 // Concrete Decorator class for Encryption
 class Encryption : public DataDecorator
 {
 public:
-    explicit Encryption(Data *data) : DataDecorator(data)
+    explicit Encryption(std::shared_ptr<Data> data) : DataDecorator(data)
     {
     }
 
@@ -63,7 +64,7 @@ public:
 class Compression : public DataDecorator
 {
 public:
-    explicit Compression(Data *data) : DataDecorator(data)
+    explicit Compression(std::shared_ptr<Data> data) : DataDecorator(data)
     {
     }
 
@@ -77,13 +78,13 @@ public:
 // Client code
 int main()
 {
-    Data *data = new FileData("sample.txt");
+    std::shared_ptr<Data> data = std::make_shared<FileData>("sample.txt");
     data->display();
 
-    Data *encrypted_data = new Encryption(data);
+    std::shared_ptr<Data> encrypted_data = std::make_shared<Encryption>(data);
     encrypted_data->display();
 
-    Data *compressed_data = new Compression(encrypted_data);
+    std::shared_ptr<Data> compressed_data = std::make_shared<Compression>(encrypted_data);
     compressed_data->display();
 
     return 0;

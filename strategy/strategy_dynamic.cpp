@@ -83,7 +83,7 @@ private:
     std::unique_ptr<ListStrategy> list_strategy;
 };
 
-int main_()
+int main()
 {
     // markdown
     TextProcessor tp;

@@ -1,6 +1,7 @@
 #include <functional>
 #include <iostream>
 #include <map>
+#include <memory>
 
 class Drink
 {

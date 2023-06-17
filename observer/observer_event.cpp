@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -12,36 +14,41 @@ public:
 class EventManager
 {
 public:
-    void addListener(EventListener *listener)
+    void addListener(std::shared_ptr<EventListener> listener)
     {
         m_listeners.push_back(listener);
     }
 
-    void removeListener(EventListener *listener)
+    void removeListener(std::shared_ptr<EventListener> listener)
     {
-        auto it = std::find(m_listeners.begin(), m_listeners.end(), listener);
-        if (it != m_listeners.end())
-        {
-            m_listeners.erase(it);
-        }
+        m_listeners.erase(std::remove_if(m_listeners.begin(),
+                                         m_listeners.end(),
+                                         [&listener](const std::weak_ptr<EventListener> &wp) {
+                                             return wp.expired() || wp.lock() == listener;
+                                         }),
+                          m_listeners.end());
     }
 
     void notify(const std::string &eventType, const std::string &eventData)
     {
-        for (auto listener : m_listeners)
+        for (const auto &weakListener : m_listeners)
         {
-            listener->handleEvent(eventType, eventData);
+            auto listener = weakListener.lock();
+            if (listener)
+            {
+                listener->handleEvent(eventType, eventData);
+            }
         }
     }
 
 private:
-    std::vector<EventListener *> m_listeners;
+    std::vector<std::weak_ptr<EventListener>> m_listeners;
 };
 
 class Editor
 {
 public:
-    Editor(EventManager *eventManager) : m_eventManager(eventManager)
+    Editor(std::shared_ptr<EventManager> eventManager) : m_eventManager(eventManager)
     {
     }
 
@@ -64,7 +71,7 @@ public:
     }
 
 private:
-    EventManager *m_eventManager;
+    std::shared_ptr<EventManager> m_eventManager;
 };
 
 class EmailListener : public EventListener
@@ -92,23 +99,23 @@ public:
 int main()
 {
     // Create the event manager and the editor
-    EventManager eventManager;
-    Editor editor(&eventManager);
+    auto eventManager = std::make_shared<EventManager>();
+    Editor editor(eventManager);
 
     // Create the event listeners
-    EmailListener emailListener;
-    LoggingListener loggingListener;
+    auto emailListener = std::make_shared<EmailListener>();
+    auto loggingListener = std::make_shared<LoggingListener>();
 
     // Add the event listeners to the event manager
-    eventManager.addListener(&emailListener);
-    eventManager.addListener(&loggingListener);
+    eventManager->addListener(emailListener);
+    eventManager->addListener(loggingListener);
 
     // Open and save a file
     editor.openFile("myFile.txt");
     editor.saveFile("myFile.txt");
 
     // Remove the logging listener and save another file
-    eventManager.removeListener(&loggingListener);
+    eventManager->removeListener(loggingListener);
     editor.saveFile("anotherFile.txt");
 
     return 0;

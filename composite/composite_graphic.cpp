@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <vector>
 
 class Graphic
@@ -10,21 +11,21 @@ public:
 class ImageEditor
 {
 public:
-    void addGraphic(Graphic *graphic)
+    void addGraphic(std::shared_ptr<Graphic> graphic)
     {
         graphics_.push_back(graphic);
     }
 
     void draw()
     {
-        for (auto graphic : graphics_)
+        for (const auto &graphic : graphics_)
         {
             graphic->draw();
         }
     }
 
 private:
-    std::vector<Graphic *> graphics_;
+    std::vector<std::shared_ptr<Graphic>> graphics_;
 };
 
 class Dot : public Graphic
@@ -39,21 +40,21 @@ public:
 class CompoundGraphic : public Graphic
 {
 public:
-    void add(Graphic *graphic)
+    void add(std::shared_ptr<Graphic> graphic)
     {
         graphics_.push_back(graphic);
     }
 
     void draw() override
     {
-        for (auto graphic : graphics_)
+        for (const auto &graphic : graphics_)
         {
             graphic->draw();
         }
     }
 
 private:
-    std::vector<Graphic *> graphics_;
+    std::vector<std::shared_ptr<Graphic>> graphics_;
 };
 
 class Circle : public Graphic
@@ -68,15 +69,16 @@ public:
 int main()
 {
     ImageEditor editor;
-    CompoundGraphic compoundGraphic;
-    Dot dot1, dot2;
-    Circle circle;
+    std::shared_ptr<CompoundGraphic> compoundGraphic = std::make_shared<CompoundGraphic>();
+    std::shared_ptr<Dot> dot1 = std::make_shared<Dot>();
+    std::shared_ptr<Dot> dot2 = std::make_shared<Dot>();
+    std::shared_ptr<Circle> circle = std::make_shared<Circle>();
 
-    compoundGraphic.add(&dot1);
-    compoundGraphic.add(&dot2);
-    compoundGraphic.add(&circle);
+    compoundGraphic->add(dot1);
+    compoundGraphic->add(dot2);
+    compoundGraphic->add(circle);
 
-    editor.addGraphic(&compoundGraphic);
+    editor.addGraphic(compoundGraphic);
     editor.draw();
 
     return 0;

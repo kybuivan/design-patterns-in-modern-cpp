@@ -1,11 +1,12 @@
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
 
 class Window
 {
 public:
-    virtual Window *clone() = 0;
+    virtual std::unique_ptr<Window> clone() = 0;
     virtual void display() = 0;
 };
 
@@ -16,9 +17,9 @@ public:
     {
         std::cout << "ApplicationWindow created." << std::endl;
     }
-    Window *clone() override
+    std::unique_ptr<Window> clone() override
     {
-        return new ApplicationWindow();
+        return std::make_unique<ApplicationWindow>(*this);
     }
     void display() override
     {
@@ -33,9 +34,9 @@ public:
     {
         std::cout << "DialogWindow created." << std::endl;
     }
-    Window *clone() override
+    std::unique_ptr<Window> clone() override
     {
-        return new DialogWindow();
+        return std::make_unique<DialogWindow>(*this);
     }
     void display() override
     {
@@ -46,15 +47,15 @@ public:
 class WindowRegistry
 {
 private:
-    std::map<std::string, Window *> windows;
+    std::map<std::string, std::unique_ptr<Window>> windows;
 
 public:
-    void register_window(const std::string &key, Window *window)
+    void register_window(const std::string &key, std::unique_ptr<Window> window)
     {
-        windows[key] = window;
+        windows[key] = std::move(window);
     }
 
-    Window *get_window(const std::string &key)
+    std::unique_ptr<Window> get_window(const std::string &key)
     {
         return windows[key]->clone();
     }
@@ -63,13 +64,13 @@ public:
 int main()
 {
     WindowRegistry registry;
-    registry.register_window("application", new ApplicationWindow());
-    registry.register_window("dialog", new DialogWindow());
+    registry.register_window("application", std::make_unique<ApplicationWindow>());
+    registry.register_window("dialog", std::make_unique<DialogWindow>());
 
-    Window *window1 = registry.get_window("application");
+    std::unique_ptr<Window> window1 = registry.get_window("application");
     window1->display();
 
-    Window *window2 = registry.get_window("dialog");
+    std::unique_ptr<Window> window2 = registry.get_window("dialog");
     window2->display();
 
     return 0;

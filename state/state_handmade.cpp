@@ -77,7 +77,7 @@ inline std::ostream &operator<<(std::ostream &os, const Trigger &t)
     return os;
 }
 
-int main_f(char *argv[])
+int main(char *argv[])
 {
     std::map<State, std::vector<std::pair<Trigger, State>>> rules;
 

@@ -1,12 +1,13 @@
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
 
 // Abstract class for button prototypes
 class ButtonPrototype
 {
 public:
-    virtual ButtonPrototype *clone() = 0;
+    virtual std::unique_ptr<ButtonPrototype> clone() = 0;
     virtual void draw() = 0;
 };
 
@@ -14,12 +15,12 @@ public:
 class RoundButton : public ButtonPrototype
 {
 public:
-    ButtonPrototype *clone()
+    std::unique_ptr<ButtonPrototype> clone() override
     {
-        return new RoundButton(*this);
+        return std::make_unique<RoundButton>(*this);
     }
 
-    void draw()
+    void draw() override
     {
         std::cout << "Drawing a round button" << std::endl;
     }
@@ -28,12 +29,12 @@ public:
 class SquareButton : public ButtonPrototype
 {
 public:
-    ButtonPrototype *clone()
+    std::unique_ptr<ButtonPrototype> clone() override
     {
-        return new SquareButton(*this);
+        return std::make_unique<SquareButton>(*this);
     }
 
-    void draw()
+    void draw() override
     {
         std::cout << "Drawing a square button" << std::endl;
     }
@@ -45,17 +46,17 @@ class ButtonRegistry
 public:
     ButtonRegistry()
     {
-        prototypes_["Round"] = new RoundButton();
-        prototypes_["Square"] = new SquareButton();
+        prototypes_["Round"] = std::make_unique<RoundButton>();
+        prototypes_["Square"] = std::make_unique<SquareButton>();
     }
 
-    ButtonPrototype *create(const std::string &type)
+    std::unique_ptr<ButtonPrototype> create(const std::string &type)
     {
         return prototypes_[type]->clone();
     }
 
 private:
-    std::map<std::string, ButtonPrototype *> prototypes_;
+    std::map<std::string, std::unique_ptr<ButtonPrototype>> prototypes_;
 };
 
 // Client
@@ -75,8 +76,8 @@ public:
     }
 
 private:
-    ButtonPrototype *button1_;
-    ButtonPrototype *button2_;
+    std::unique_ptr<ButtonPrototype> button1_;
+    std::unique_ptr<ButtonPrototype> button2_;
 };
 
 int main()
