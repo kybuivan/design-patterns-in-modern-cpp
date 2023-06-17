@@ -1,6 +1,6 @@
 #include <iostream>
+#include <memory>
 #include <string>
-#include <vector>
 
 // Base class for Person
 class Person
@@ -28,10 +28,10 @@ public:
 class PersonBuilder
 {
 protected:
-    Person person;
+    std::unique_ptr<Person> person;
 
 public:
-    PersonBuilder(const std::string &name) : person{Person(name, "", "")}
+    PersonBuilder(const std::string &name) : person(std::make_unique<Person>(name, "", ""))
     {
     }
 
@@ -39,7 +39,7 @@ public:
 
     Person getPerson()
     {
-        return person;
+        return *person;
     }
 };
 
@@ -53,13 +53,13 @@ public:
 
     AddressBuilder &at(const std::string &address)
     {
-        person.address = address;
+        person->address = address;
         return *this;
     }
 
     AddressBuilder &withPostcode(const std::string &postcode)
     {
-        person.address = person.address + " " + postcode;
+        person->address += " " + postcode;
         return *this;
     }
 };
@@ -74,7 +74,7 @@ public:
 
     JobBuilder &worksAsA(const std::string &job)
     {
-        person.job = job;
+        person->job = job;
         return *this;
     }
 };

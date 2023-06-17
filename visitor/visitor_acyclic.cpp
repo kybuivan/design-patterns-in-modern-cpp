@@ -1,11 +1,7 @@
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
-
-// cyclic visitor: based on function overloading
-//                 works only on a stable hierarchy
-// acyclic visitor: based on RTTI
-//                  no hierarchy limitations, but slower
 
 template <typename Visitable>
 struct Visitor
@@ -24,8 +20,7 @@ struct Expression
 
     virtual void accept(VisitorBase &obj)
     {
-        using EV = Visitor<Expression>;
-        if (auto ev = dynamic_cast<EV *>(&obj))
+        if (auto ev = dynamic_cast<Visitor<Expression> *>(&obj))
             ev->visit(*this);
     }
 };
@@ -38,39 +33,32 @@ struct DoubleExpression : Expression
     {
     }
 
-    virtual void accept(VisitorBase &obj)
+    void accept(VisitorBase &obj) override
     {
-        using DEV = Visitor<DoubleExpression>;
-        if (auto ev = dynamic_cast<DEV *>(&obj))
+        if (auto ev = dynamic_cast<Visitor<DoubleExpression> *>(&obj))
             ev->visit(*this);
     }
 };
 
 struct AdditionExpression : Expression
 {
-    Expression *left, *right;
+    std::unique_ptr<Expression> left, right;
 
-    AdditionExpression(Expression *left, Expression *right) : left(left), right(right)
+    AdditionExpression(std::unique_ptr<Expression> left, std::unique_ptr<Expression> right)
+        : left(std::move(left)), right(std::move(right))
     {
     }
 
-    ~AdditionExpression()
+    void accept(VisitorBase &obj) override
     {
-        delete left;
-        delete right;
-    }
-
-    virtual void accept(VisitorBase &obj)
-    {
-        using AEV = Visitor<AdditionExpression>;
-        if (auto ev = dynamic_cast<AEV *>(&obj))
+        if (auto ev = dynamic_cast<Visitor<AdditionExpression> *>(&obj))
             ev->visit(*this);
     }
 };
 
 struct ExpressionPrinter : VisitorBase,
                            Visitor<Expression>,
-                           //Visitor<DoubleExpression>,
+                           Visitor<DoubleExpression>,
                            Visitor<AdditionExpression>
 {
     void visit(Expression &obj) override
@@ -78,11 +66,10 @@ struct ExpressionPrinter : VisitorBase,
         // fallback?
     }
 
-    // can remove double visitor without failure
-    //  void visit(DoubleExpression &obj) override
-    //  {
-    //    oss << obj.value;
-    //  }
+    void visit(DoubleExpression &obj) override
+    {
+        oss << obj.value;
+    }
 
     void visit(AdditionExpression &obj) override
     {
@@ -104,12 +91,13 @@ private:
 
 int main()
 {
-    auto e = new AdditionExpression{
-        new DoubleExpression{1},
-        new AdditionExpression{new DoubleExpression{2}, new DoubleExpression{3}}};
+    auto e = std::make_unique<AdditionExpression>(
+        std::make_unique<DoubleExpression>(1),
+        std::make_unique<AdditionExpression>(std::make_unique<DoubleExpression>(2),
+                                             std::make_unique<DoubleExpression>(3)));
 
     ExpressionPrinter ep;
-    ep.visit(*e);
+    e->accept(ep);
     std::cout << ep.str() << "\n";
 
     return 0;

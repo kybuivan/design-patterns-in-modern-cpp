@@ -4,9 +4,7 @@
 class SortStrategy
 {
 public:
-    virtual ~SortStrategy()
-    {
-    }
+    virtual ~SortStrategy() = default;
     virtual void sort(std::vector<int> &data) = 0;
 };
 

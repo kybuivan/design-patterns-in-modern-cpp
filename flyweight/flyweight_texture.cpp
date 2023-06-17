@@ -5,6 +5,7 @@
 class Texture
 {
 public:
+    virtual ~Texture() = default;
     virtual void render() = 0;
 };
 

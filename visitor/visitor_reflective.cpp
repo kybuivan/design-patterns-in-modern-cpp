@@ -1,5 +1,5 @@
-// visitor examples for design patterns c++ book
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -18,47 +18,30 @@ struct DoubleExpression : Expression
 
 struct AdditionExpression : Expression
 {
-    Expression *left, *right;
+    std::unique_ptr<Expression> left, right;
 
-    AdditionExpression(Expression *const left, Expression *const right) : left{left}, right{right}
+    AdditionExpression(std::unique_ptr<Expression> left, std::unique_ptr<Expression> right)
+        : left(std::move(left)), right(std::move(right))
     {
-    }
-
-    ~AdditionExpression()
-    {
-        delete left;
-        delete right;
     }
 };
 
 struct ExpressionPrinter
 {
-    /*void print(DoubleExpression *de, ostringstream& oss) const
-    {
-        oss << de->value;
-    }
-    void print(AdditionExpression *ae, ostringstream& oss) const
-    {
-        oss << "(";
-        print(ae->left, oss);
-        oss << "+";
-        print(ae->right, oss);
-        oss << ")";
-    }*/
     std::ostringstream oss;
 
-    void print(Expression *e)
+    void print(const Expression *e)
     {
-        if (auto de = dynamic_cast<DoubleExpression *>(e))
+        if (const auto de = dynamic_cast<const DoubleExpression *>(e))
         {
             oss << de->value;
         }
-        else if (auto ae = dynamic_cast<AdditionExpression *>(e))
+        else if (const auto ae = dynamic_cast<const AdditionExpression *>(e))
         {
             oss << "(";
-            print(ae->left);
+            print(ae->left.get());
             oss << "+";
-            print(ae->right);
+            print(ae->right.get());
             oss << ")";
         }
     }
@@ -71,13 +54,13 @@ struct ExpressionPrinter
 
 int main()
 {
-    auto e = new AdditionExpression{
-        new DoubleExpression{1},
-        new AdditionExpression{new DoubleExpression{2}, new DoubleExpression{3}}};
-    std::ostringstream oss;
-    //e->print(oss);
+    auto e = std::make_unique<AdditionExpression>(
+        std::make_unique<DoubleExpression>(1),
+        std::make_unique<AdditionExpression>(std::make_unique<DoubleExpression>(2),
+                                             std::make_unique<DoubleExpression>(3)));
+
     ExpressionPrinter ep;
-    ep.print(e);
+    ep.print(e.get());
     std::cout << ep.str() << std::endl;
 
     return 0;

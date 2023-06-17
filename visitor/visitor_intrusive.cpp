@@ -1,58 +1,88 @@
-// visitor examples for design patterns c++ book
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 
+struct DoubleExpression;
+struct AdditionExpression;
+
+struct ExpressionVisitor
+{
+    virtual ~ExpressionVisitor() = default;
+    virtual void visit(DoubleExpression &de) = 0;
+    virtual void visit(AdditionExpression &ae) = 0;
+};
+
 struct Expression
 {
-    virtual void print(std::ostringstream &oss) = 0;
+    virtual ~Expression() = default;
+
+    virtual void accept(ExpressionVisitor &visitor) = 0;
 };
 
 struct DoubleExpression : Expression
 {
     double value;
+
     explicit DoubleExpression(const double value) : value{value}
     {
     }
 
-    void print(std::ostringstream &oss) override
+    void accept(ExpressionVisitor &visitor) override
     {
-        oss << value;
+        visitor.visit(*this);
     }
 };
 
 struct AdditionExpression : Expression
 {
-    Expression *left, *right;
+    std::unique_ptr<Expression> left, right;
 
-    AdditionExpression(Expression *const left, Expression *const right) : left{left}, right{right}
+    AdditionExpression(std::unique_ptr<Expression> left, std::unique_ptr<Expression> right)
+        : left{std::move(left)}, right{std::move(right)}
     {
     }
 
-    ~AdditionExpression()
+    void accept(ExpressionVisitor &visitor) override
     {
-        delete left;
-        delete right;
+        visitor.visit(*this);
+    }
+};
+
+struct PrintExpressionVisitor : ExpressionVisitor
+{
+    std::ostringstream oss;
+
+    void visit(DoubleExpression &de) override
+    {
+        oss << de.value;
     }
 
-    void print(std::ostringstream &oss) override
+    void visit(AdditionExpression &ae) override
     {
         oss << "(";
-        left->print(oss);
+        ae.left->accept(*this);
         oss << "+";
-        right->print(oss);
+        ae.right->accept(*this);
         oss << ")";
+    }
+
+    std::string str() const
+    {
+        return oss.str();
     }
 };
 
 int main()
 {
-    auto e = new AdditionExpression{
-        new DoubleExpression{1},
-        new AdditionExpression{new DoubleExpression{2}, new DoubleExpression{3}}};
-    std::ostringstream oss;
-    e->print(oss);
-    std::cout << oss.str() << std::endl;
+    auto e = std::make_unique<AdditionExpression>(
+        std::make_unique<DoubleExpression>(1),
+        std::make_unique<AdditionExpression>(std::make_unique<DoubleExpression>(2),
+                                             std::make_unique<DoubleExpression>(3)));
+
+    PrintExpressionVisitor visitor;
+    e->accept(visitor);
+    std::cout << visitor.str() << std::endl;
 
     return 0;
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <vector>
 
@@ -7,9 +8,7 @@ class ReportFormatter
 {
 public:
     virtual std::string formatReport(const std::vector<int> &data) const = 0;
-    virtual ~ReportFormatter()
-    {
-    }
+    virtual ~ReportFormatter() = default;
 };
 
 // Concrete strategy classes
@@ -45,16 +44,16 @@ public:
 class ReportGenerator
 {
 private:
-    ReportFormatter *formatter;
+    std::unique_ptr<ReportFormatter> formatter;
 
 public:
-    ReportGenerator(ReportFormatter *formatter) : formatter(formatter)
+    ReportGenerator(std::unique_ptr<ReportFormatter> formatter) : formatter(std::move(formatter))
     {
     }
 
-    void setFormatter(ReportFormatter *formatter)
+    void setFormatter(std::unique_ptr<ReportFormatter> formatter)
     {
-        this->formatter = formatter;
+        this->formatter = std::move(formatter);
     }
 
     void generateReport(const std::vector<int> &data)
@@ -68,15 +67,16 @@ int main()
 {
     std::vector<int> data = {1, 2, 3, 4, 5};
 
-    CsvReportFormatter csvFormatter;
-    TabbedReportFormatter tabbedFormatter;
+    std::unique_ptr<ReportFormatter> csvFormatter = std::make_unique<CsvReportFormatter>();
+    std::unique_ptr<ReportFormatter> tabbedFormatter = std::make_unique<TabbedReportFormatter>();
 
-    ReportGenerator reportGenerator(&csvFormatter);
+    std::unique_ptr<ReportGenerator> reportGenerator =
+        std::make_unique<ReportGenerator>(std::move(csvFormatter));
 
-    reportGenerator.generateReport(data);
+    reportGenerator->generateReport(data);
 
-    reportGenerator.setFormatter(&tabbedFormatter);
-    reportGenerator.generateReport(data);
+    reportGenerator->setFormatter(std::move(tabbedFormatter));
+    reportGenerator->generateReport(data);
 
     return 0;
 }

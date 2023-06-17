@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 
 // Declare the SubsystemA class
 class SubsystemA
@@ -26,35 +27,27 @@ public:
 class Facade
 {
 private:
-    // Declare pointers to objects of the SubsystemA and SubsystemB classes
-    SubsystemA *subsystemA;
-    SubsystemB *subsystemB;
+    // Declare objects of the SubsystemA and SubsystemB classes
+    SubsystemA subsystemA;
+    SubsystemB subsystemB;
 
 public:
-    // Constructor for the Facade class
-    Facade()
-    {
-        // Create objects of the SubsystemA and SubsystemB classes
-        subsystemA = new SubsystemA();
-        subsystemB = new SubsystemB();
-    }
-
     // Declare the operation function
     void operation()
     {
         // Call the operationA and operationB functions of the SubsystemA and SubsystemB objects, respectively
-        subsystemA->operationA();
-        subsystemB->operationB();
+        subsystemA.operationA();
+        subsystemB.operationB();
     }
 };
 
 int main()
 {
     // Create an object of the Facade class
-    Facade *facade = new Facade();
+    Facade facade;
 
     // Call the operation function of the Facade object
-    facade->operation();
+    facade.operation();
 
     return 0;
 }

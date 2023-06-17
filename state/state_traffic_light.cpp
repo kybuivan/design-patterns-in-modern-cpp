@@ -1,53 +1,55 @@
 #include <iostream>
-using namespace std;
+#include <memory>
 
 class State
 {
 public:
+    virtual ~State() = default;
+
     virtual void signal() = 0;
 };
 
 class Red : public State
 {
 public:
-    void signal()
+    void signal() override
     {
-        cout << "Stop" << endl;
+        std::cout << "Stop" << std::endl;
     }
 };
 
 class Yellow : public State
 {
 public:
-    void signal()
+    void signal() override
     {
-        cout << "Slow down" << endl;
+        std::cout << "Slow down" << std::endl;
     }
 };
 
 class Green : public State
 {
 public:
-    void signal()
+    void signal() override
     {
-        cout << "Go" << endl;
+        std::cout << "Go" << std::endl;
     }
 };
 
 class TrafficLight
 {
 private:
-    State *currentState;
+    std::unique_ptr<State> currentState;
 
 public:
     TrafficLight()
     {
-        currentState = new Red;
+        currentState = std::make_unique<Red>();
     }
 
-    void changeState(State *state)
+    void changeState(std::unique_ptr<State> state)
     {
-        currentState = state;
+        currentState = std::move(state);
     }
 
     void signal()
@@ -58,15 +60,13 @@ public:
 
 int main()
 {
-    TrafficLight *trafficLight = new TrafficLight;
+    std::unique_ptr<TrafficLight> trafficLight = std::make_unique<TrafficLight>();
 
     trafficLight->signal();
-    trafficLight->changeState(new Green);
+    trafficLight->changeState(std::make_unique<Green>());
     trafficLight->signal();
-    trafficLight->changeState(new Yellow);
+    trafficLight->changeState(std::make_unique<Yellow>());
     trafficLight->signal();
-
-    delete trafficLight;
 
     return 0;
 }

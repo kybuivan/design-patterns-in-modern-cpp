@@ -7,18 +7,14 @@
 class Observer
 {
 public:
-    virtual ~Observer()
-    {
-    }
+    virtual ~Observer() = default;
     virtual void update(const std::string &message) = 0;
 };
 
 class Subject
 {
 public:
-    virtual ~Subject()
-    {
-    }
+    virtual ~Subject() = default;
     virtual void registerObserver(std::weak_ptr<Observer> observer) = 0;
     virtual void removeObserver(std::weak_ptr<Observer> observer) = 0;
     virtual void notifyObservers(const std::string &message) = 0;

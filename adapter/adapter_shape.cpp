@@ -1,9 +1,11 @@
 #include <iostream>
+#include <memory>
 
 // Target interface
 class Shape
 {
 public:
+    virtual ~Shape() = default; // Add a virtual destructor
     virtual void draw() = 0;
 };
 
@@ -29,8 +31,7 @@ public:
 
 int main()
 {
-    Shape *shape = new RectangleAdapter();
+    std::unique_ptr<Shape> shape = std::make_unique<RectangleAdapter>();
     shape->draw();
-    delete shape;
     return 0;
 }

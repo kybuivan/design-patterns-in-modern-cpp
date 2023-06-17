@@ -6,6 +6,7 @@
 class Window
 {
 public:
+    virtual ~Window() = default;
     virtual std::unique_ptr<Window> clone() = 0;
     virtual void display() = 0;
 };

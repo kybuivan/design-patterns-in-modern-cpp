@@ -5,19 +5,21 @@
 class Sofa
 {
 public:
+    virtual ~Sofa() = default;
     virtual void Show() = 0;
 };
 
 class Chair
 {
 public:
+    virtual ~Chair() = default;
     virtual void Show() = 0;
 };
 
 class ModernSofa : public Sofa
 {
 public:
-    void Show()
+    void Show() override
     {
         std::cout << "Modern Sofa\n";
     }
@@ -26,7 +28,7 @@ public:
 class ModernChair : public Chair
 {
 public:
-    void Show()
+    void Show() override
     {
         std::cout << "Modern Chair\n";
     }
@@ -35,7 +37,7 @@ public:
 class VintageSofa : public Sofa
 {
 public:
-    void Show()
+    void Show() override
     {
         std::cout << "Vintage Sofa\n";
     }
@@ -44,7 +46,7 @@ public:
 class VintageChair : public Chair
 {
 public:
-    void Show()
+    void Show() override
     {
         std::cout << "Vintage Chair\n";
     }
@@ -53,6 +55,7 @@ public:
 class AbstractFurnitureFactory
 {
 public:
+    virtual ~AbstractFurnitureFactory() = default;
     virtual std::unique_ptr<Sofa> CreateSofa() = 0;
     virtual std::unique_ptr<Chair> CreateChair() = 0;
 };
@@ -60,11 +63,11 @@ public:
 class ModernFurnitureFactory : public AbstractFurnitureFactory
 {
 public:
-    std::unique_ptr<Sofa> CreateSofa()
+    std::unique_ptr<Sofa> CreateSofa() override
     {
         return std::make_unique<ModernSofa>();
     }
-    std::unique_ptr<Chair> CreateChair()
+    std::unique_ptr<Chair> CreateChair() override
     {
         return std::make_unique<ModernChair>();
     }
@@ -73,11 +76,11 @@ public:
 class VintageFurnitureFactory : public AbstractFurnitureFactory
 {
 public:
-    std::unique_ptr<Sofa> CreateSofa()
+    std::unique_ptr<Sofa> CreateSofa() override
     {
         return std::make_unique<VintageSofa>();
     }
-    std::unique_ptr<Chair> CreateChair()
+    std::unique_ptr<Chair> CreateChair() override
     {
         return std::make_unique<VintageChair>();
     }
@@ -85,9 +88,9 @@ public:
 
 int main()
 {
-    AbstractFurnitureFactory *factory = new VintageFurnitureFactory();
-    auto sofa = factory->CreateSofa();
-    auto chair = factory->CreateChair();
+    std::unique_ptr<AbstractFurnitureFactory> factory = std::make_unique<VintageFurnitureFactory>();
+    std::unique_ptr<Sofa> sofa = factory->CreateSofa();
+    std::unique_ptr<Chair> chair = factory->CreateChair();
 
     sofa->Show();
     chair->Show();

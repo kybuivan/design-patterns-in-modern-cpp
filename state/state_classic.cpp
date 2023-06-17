@@ -1,18 +1,20 @@
 #include <iostream>
+#include <memory>
 #include <string>
-using namespace std;
 
 class LightSwitch;
 
 struct State
 {
+    virtual ~State() = default;
+
     virtual void on(LightSwitch *ls)
     {
-        cout << "Light is already on\n";
+        std::cout << "Light is already on\n";
     }
     virtual void off(LightSwitch *ls)
     {
-        cout << "Light is already off\n";
+        std::cout << "Light is already off\n";
     }
 };
 
@@ -20,7 +22,7 @@ struct OnState : State
 {
     OnState()
     {
-        cout << "Light turned on\n";
+        std::cout << "Light turned on\n";
     }
 
     void off(LightSwitch *ls) override;
@@ -30,7 +32,7 @@ struct OffState : State
 {
     OffState()
     {
-        cout << "Light turned off\n";
+        std::cout << "Light turned off\n";
     }
 
     void on(LightSwitch *ls) override;
@@ -38,16 +40,15 @@ struct OffState : State
 
 class LightSwitch
 {
-    State *state;
+    std::unique_ptr<State> state;
 
 public:
-    LightSwitch()
+    LightSwitch() : state(std::make_unique<OffState>())
     {
-        state = new OffState();
     }
     void set_state(State *state)
     {
-        this->state = state;
+        this->state.reset(state);
     }
     void on()
     {
@@ -61,16 +62,14 @@ public:
 
 void OnState::off(LightSwitch *ls)
 {
-    cout << "Switching light off...\n";
+    std::cout << "Switching light off...\n";
     ls->set_state(new OffState());
-    delete this;
 }
 
 void OffState::on(LightSwitch *ls)
 {
-    cout << "Switching light on...\n";
+    std::cout << "Switching light on...\n";
     ls->set_state(new OnState());
-    delete this;
 }
 
 int main()
