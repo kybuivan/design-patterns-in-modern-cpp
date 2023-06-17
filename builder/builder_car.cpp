@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -38,47 +39,48 @@ public:
 class CarBuilder
 {
 public:
+    virtual ~CarBuilder() = default;
     virtual void setMake() = 0;
     virtual void setModel() = 0;
     virtual void setYear() = 0;
     virtual void addOption(const std::string &option) = 0;
-    virtual Car build() = 0;
+    virtual std::unique_ptr<Car> build() = 0;
 };
 
 // Concrete Builder
 class HondaBuilder : public CarBuilder
 {
 private:
-    Car car;
+    std::unique_ptr<Car> car;
 
 public:
-    HondaBuilder() : car{Car("Honda", "", 0, {})}
+    HondaBuilder() : car{std::make_unique<Car>("Honda", "", 0, std::vector<std::string>())}
     {
     }
 
     void setMake() override
     {
-        car.make = "Honda";
+        car->make = "Honda";
     }
 
     void setModel() override
     {
-        car.model = "Civic";
+        car->model = "Civic";
     }
 
     void setYear() override
     {
-        car.year = 2022;
+        car->year = 2022;
     }
 
     void addOption(const std::string &option) override
     {
-        car.options.push_back(option);
+        car->options.push_back(option);
     }
 
-    Car build() override
+    std::unique_ptr<Car> build() override
     {
-        return car;
+        return std::move(car);
     }
 };
 
@@ -109,8 +111,8 @@ int main()
     HondaBuilder hondaBuilder;
     CarDirector carDirector(hondaBuilder);
     carDirector.buildCar();
-    Car car = hondaBuilder.build();
-    car.show();
+    std::unique_ptr<Car> car = hondaBuilder.build();
+    car->show();
 
     return 0;
 }

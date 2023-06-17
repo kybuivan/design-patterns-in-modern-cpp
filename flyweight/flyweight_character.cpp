@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <unordered_map>
 
 class Character
@@ -26,32 +27,32 @@ private:
 class CharacterFactory
 {
 public:
-    Character *GetCharacter(char key)
+    std::shared_ptr<Character> GetCharacter(char key)
     {
-        if (characters_.count(key) == 0)
+        auto it = characters_.find(key);
+        if (it == characters_.end())
         {
-            characters_[key] = new ConcreteCharacter(key);
+            it = characters_.emplace(key, std::make_shared<ConcreteCharacter>(key)).first;
         }
-        return characters_[key];
+        return it->second;
     }
 
 private:
-    std::unordered_map<char, Character *> characters_;
+    std::unordered_map<char, std::shared_ptr<Character>> characters_;
 };
 
 int main()
 {
-    CharacterFactory *factory = new CharacterFactory();
+    CharacterFactory factory;
 
-    Character *a = factory->GetCharacter('A');
+    std::shared_ptr<Character> a = factory.GetCharacter('A');
     a->Display(12);
-    Character *b = factory->GetCharacter('B');
+    std::shared_ptr<Character> b = factory.GetCharacter('B');
     b->Display(12);
-    Character *c = factory->GetCharacter('C');
+    std::shared_ptr<Character> c = factory.GetCharacter('C');
     c->Display(12);
-    Character *a2 = factory->GetCharacter('A');
+    std::shared_ptr<Character> a2 = factory.GetCharacter('A');
     a2->Display(24);
 
-    delete factory;
     return 0;
 }

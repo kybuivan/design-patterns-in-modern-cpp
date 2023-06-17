@@ -5,6 +5,7 @@
 class Component
 {
 public:
+    virtual ~Component() = default;
     virtual std::string GetDescription() const = 0;
     virtual double GetCost() const = 0;
 };

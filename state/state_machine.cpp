@@ -9,6 +9,8 @@ class VendingMachine;
 class State
 {
 public:
+    virtual ~State() = default;
+
     virtual void insertCoin(VendingMachine &machine) = 0;
     virtual void ejectCoin(VendingMachine &machine) = 0;
     virtual void selectProduct(VendingMachine &machine) = 0;

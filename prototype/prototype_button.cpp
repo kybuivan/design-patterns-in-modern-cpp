@@ -7,6 +7,7 @@
 class ButtonPrototype
 {
 public:
+    virtual ~ButtonPrototype() = default;
     virtual std::unique_ptr<ButtonPrototype> clone() = 0;
     virtual void draw() = 0;
 };

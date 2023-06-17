@@ -4,6 +4,7 @@
 class Subject
 {
 public:
+    virtual ~Subject() = default;
     virtual void request() = 0;
 };
 

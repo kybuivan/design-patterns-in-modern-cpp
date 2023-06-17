@@ -6,6 +6,8 @@ class Visitor;
 class Element
 {
 public:
+    virtual ~Element() = default;
+
     virtual void accept(Visitor &v) = 0;
 };
 
@@ -26,6 +28,8 @@ public:
 class Visitor
 {
 public:
+    virtual ~Visitor() = default;
+
     virtual void visit(ConcreteElementA &e) = 0;
     virtual void visit(ConcreteElementB &e) = 0;
 };

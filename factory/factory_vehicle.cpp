@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <string>
 
 enum class VehicleType
@@ -11,13 +12,14 @@ enum class VehicleType
 class Vehicle
 {
 public:
+    virtual ~Vehicle() = default;
     virtual void printVehicleType() = 0;
 };
 
 class Car : public Vehicle
 {
 public:
-    void printVehicleType()
+    void printVehicleType() override
     {
         std::cout << "Car" << std::endl;
     }
@@ -26,7 +28,7 @@ public:
 class Truck : public Vehicle
 {
 public:
-    void printVehicleType()
+    void printVehicleType() override
     {
         std::cout << "Truck" << std::endl;
     }
@@ -35,7 +37,7 @@ public:
 class Bike : public Vehicle
 {
 public:
-    void printVehicleType()
+    void printVehicleType() override
     {
         std::cout << "Bike" << std::endl;
     }
@@ -44,16 +46,16 @@ public:
 class VehicleFactory
 {
 public:
-    static Vehicle *createVehicle(VehicleType type)
+    static std::unique_ptr<Vehicle> createVehicle(VehicleType type)
     {
         switch (type)
         {
         case VehicleType::CAR:
-            return new Car;
+            return std::make_unique<Car>();
         case VehicleType::TRUCK:
-            return new Truck;
+            return std::make_unique<Truck>();
         case VehicleType::BIKE:
-            return new Bike;
+            return std::make_unique<Bike>();
         }
         return nullptr;
     }
@@ -62,7 +64,8 @@ public:
 int main()
 {
     VehicleType type = VehicleType::CAR;
-    Vehicle *vehicle = VehicleFactory::createVehicle(type);
+    std::unique_ptr<Vehicle> vehicle = VehicleFactory::createVehicle(type);
     vehicle->printVehicleType();
+
     return 0;
 }

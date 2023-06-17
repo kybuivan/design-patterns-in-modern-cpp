@@ -5,6 +5,7 @@
 class Graphic
 {
 public:
+    virtual ~Graphic() = default;
     virtual void draw() = 0;
 };
 

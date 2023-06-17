@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <string>
 
 class VideoFile
@@ -29,11 +30,11 @@ public:
 class CoderFactory
 {
 public:
-    static VideoFile *CreateCoder(const std::string &filename)
+    static std::unique_ptr<VideoFile> CreateCoder(const std::string &filename)
     {
         if (filename.substr(filename.find_last_of(".") + 1) == "ogg")
         {
-            return new Ogg(filename);
+            return std::make_unique<Ogg>(filename);
         }
         return nullptr;
     }
@@ -50,7 +51,7 @@ public:
     }
 
 private:
-    VideoFile *video_;
+    std::unique_ptr<VideoFile> video_;
 };
 
 class AudioMixer

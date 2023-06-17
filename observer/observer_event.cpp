@@ -8,6 +8,8 @@
 class EventListener
 {
 public:
+    virtual ~EventListener() = default;
+
     virtual void handleEvent(const std::string &eventType, const std::string &eventData) = 0;
 };
 

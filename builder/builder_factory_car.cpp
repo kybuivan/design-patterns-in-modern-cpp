@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <string>
 
 // Base class for Vehicle
@@ -70,12 +71,12 @@ public:
 class VehicleFactory
 {
 public:
-    static VehicleBuilder *createVehicle(const std::string &type)
+    static std::unique_ptr<VehicleBuilder> createVehicle(const std::string &type)
     {
         if (type == "Car")
-            return new CarBuilder();
+            return std::make_unique<CarBuilder>();
         else if (type == "Truck")
-            return new TruckBuilder();
+            return std::make_unique<TruckBuilder>();
 
         return nullptr;
     }
@@ -84,16 +85,13 @@ public:
 // Client
 int main()
 {
-    VehicleBuilder *carBuilder = VehicleFactory::createVehicle("Car");
+    std::unique_ptr<VehicleBuilder> carBuilder = VehicleFactory::createVehicle("Car");
     Vehicle car = carBuilder->getVehicle();
     car.show();
 
-    VehicleBuilder *truckBuilder = VehicleFactory::createVehicle("Truck");
+    std::unique_ptr<VehicleBuilder> truckBuilder = VehicleFactory::createVehicle("Truck");
     Vehicle truck = truckBuilder->getVehicle();
     truck.show();
-
-    delete carBuilder;
-    delete truckBuilder;
 
     return 0;
 }

@@ -6,6 +6,7 @@
 class Object
 {
 public:
+    virtual ~Object() = default;
     virtual void print() = 0;
 };
 

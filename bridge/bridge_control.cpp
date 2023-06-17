@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <string>
 
 // The abstraction defines the interface for the "control" part of the two class
@@ -12,12 +13,13 @@ public:
         virtual void on() = 0;
         virtual void off() = 0;
         virtual void tuneChannel(int channel) = 0;
+        virtual ~TV() = default;
     };
 
-    TV *tv;
+    std::shared_ptr<TV> tv;
 
 public:
-    RemoteControl(TV *tv) : tv(tv)
+    RemoteControl(std::shared_ptr<TV> tv) : tv(tv)
     {
     }
 
@@ -39,7 +41,7 @@ public:
 class TVRemoteMute : public RemoteControl
 {
 public:
-    TVRemoteMute(TV *tv) : RemoteControl(tv)
+    TVRemoteMute(std::shared_ptr<TV> tv) : RemoteControl(tv)
     {
     }
 
@@ -87,8 +89,10 @@ public:
 
 int main()
 {
-    RemoteControl *sonyRemote = new TVRemoteMute(new Sony());
-    RemoteControl *samsungRemote = new TVRemoteMute(new Samsung());
+    std::shared_ptr<RemoteControl> sonyRemote =
+        std::make_shared<TVRemoteMute>(std::make_shared<Sony>());
+    std::shared_ptr<RemoteControl> samsungRemote =
+        std::make_shared<TVRemoteMute>(std::make_shared<Samsung>());
 
     sonyRemote->turnOn();
     sonyRemote->setChannel(10);

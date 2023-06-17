@@ -1,18 +1,20 @@
 #include <iostream>
+#include <memory>
 #include <string>
 
 // Abstract component class
 class Notifier
 {
 public:
-    virtual void send(std::string message) = 0;
+    virtual ~Notifier() = default;
+    virtual void send(const std::string &message) = 0;
 };
 
 // Concrete component class
 class EmailNotifier : public Notifier
 {
 public:
-    void send(std::string message) override
+    void send(const std::string &message) override
     {
         std::cout << "Sending email: " << message << std::endl;
     }
@@ -22,15 +24,16 @@ public:
 class NotifierDecorator : public Notifier
 {
 protected:
-    Notifier *notifier_;
+    std::unique_ptr<Notifier> notifier;
 
 public:
-    NotifierDecorator(Notifier *notifier) : notifier_(notifier)
+    NotifierDecorator(std::unique_ptr<Notifier> notifier) : notifier(std::move(notifier))
     {
     }
-    void send(std::string message) override
+
+    void send(const std::string &message) override
     {
-        notifier_->send(message);
+        notifier->send(message);
     }
 };
 
@@ -38,13 +41,14 @@ public:
 class SMSNotifier : public NotifierDecorator
 {
 public:
-    SMSNotifier(Notifier *notifier) : NotifierDecorator(notifier)
+    SMSNotifier(std::unique_ptr<Notifier> notifier) : NotifierDecorator(std::move(notifier))
     {
     }
-    void send(std::string message) override
+
+    void send(const std::string &message) override
     {
         std::cout << "Sending SMS: " << message << std::endl;
-        notifier_->send(message);
+        NotifierDecorator::send(message);
     }
 };
 
@@ -52,22 +56,25 @@ public:
 class SlackNotifier : public NotifierDecorator
 {
 public:
-    SlackNotifier(Notifier *notifier) : NotifierDecorator(notifier)
+    SlackNotifier(std::unique_ptr<Notifier> notifier) : NotifierDecorator(std::move(notifier))
     {
     }
-    void send(std::string message) override
+
+    void send(const std::string &message) override
     {
         std::cout << "Sending Slack message: " << message << std::endl;
-        notifier_->send(message);
+        NotifierDecorator::send(message);
     }
 };
 
 int main()
 {
     // Initialize a basic email notifier
-    Notifier *email_notifier = new EmailNotifier();
+    std::unique_ptr<Notifier> email_notifier = std::make_unique<EmailNotifier>();
     // Decorate the email notifier with SMS and Slack notifiers
-    Notifier *notifier = new SMSNotifier(new SlackNotifier(email_notifier));
+    std::unique_ptr<Notifier> notifier =
+        std::make_unique<SMSNotifier>(std::make_unique<SlackNotifier>(std::move(email_notifier)));
     notifier->send("Important message");
+
     return 0;
 }

@@ -1,11 +1,14 @@
 #include <iostream>
+#include <memory>
 #include <string>
-#include <vector>
+
 class Component;
 
 class Mediator
 {
 public:
+    virtual ~Mediator() = default;
+
     virtual void notify(Component *sender, const std::string &event) = 0;
 };
 
@@ -13,9 +16,7 @@ public:
 class Component
 {
 public:
-    virtual ~Component()
-    {
-    }
+    virtual ~Component() = default;
 
     Component(Mediator *dialog) : dialog(dialog)
     {
@@ -64,8 +65,13 @@ public:
         checked = !checked;
         dialog->notify(this, "check");
     }
-    void keypress(){};
-    void click(){};
+
+    void keypress()
+    {
+    }
+    void click()
+    {
+    }
 };
 
 class AuthenticationDialog : public Mediator
@@ -74,19 +80,19 @@ public:
     AuthenticationDialog()
     {
         title = "Login";
-        loginOrRegisterChkBx = new Checkbox(this);
-        loginUsername = new Textbox(this);
-        loginPassword = new Textbox(this);
-        registrationUsername = new Textbox(this);
-        registrationPassword = new Textbox(this);
-        registrationEmail = new Textbox(this);
-        okBtn = new Button(this);
-        cancelBtn = new Button(this);
+        loginOrRegisterChkBx = std::make_unique<Checkbox>(this);
+        loginUsername = std::make_unique<Textbox>(this);
+        loginPassword = std::make_unique<Textbox>(this);
+        registrationUsername = std::make_unique<Textbox>(this);
+        registrationPassword = std::make_unique<Textbox>(this);
+        registrationEmail = std::make_unique<Textbox>(this);
+        okBtn = std::make_unique<Button>(this);
+        cancelBtn = std::make_unique<Button>(this);
     }
 
     void notify(Component *sender, const std::string &event) override
     {
-        if (sender == loginOrRegisterChkBx && event == "check")
+        if (sender == loginOrRegisterChkBx.get() && event == "check")
         {
             if (loginOrRegisterChkBx->checked)
             {
@@ -98,16 +104,16 @@ public:
             {
                 title = "Register";
                 // 1. Show registration form components.
-                // 2. Hide login form components
+                // 2. Hide login form components.
             }
             std::cout << title << std::endl;
         }
 
-        if (sender == okBtn && event == "click")
+        if (sender == okBtn.get() && event == "click")
         {
             if (loginOrRegisterChkBx->checked)
             {
-                bool found;
+                bool found = true;
                 // Try to find a user using login credentials.
                 if (!found)
                 {
@@ -126,20 +132,20 @@ public:
 
 public:
     std::string title;
-    Checkbox *loginOrRegisterChkBx;
-    Textbox *loginUsername;
-    Textbox *loginPassword;
-    Textbox *registrationUsername;
-    Textbox *registrationPassword;
-    Textbox *registrationEmail;
-    Button *okBtn;
-    Button *cancelBtn;
+    std::unique_ptr<Checkbox> loginOrRegisterChkBx;
+    std::unique_ptr<Textbox> loginUsername;
+    std::unique_ptr<Textbox> loginPassword;
+    std::unique_ptr<Textbox> registrationUsername;
+    std::unique_ptr<Textbox> registrationPassword;
+    std::unique_ptr<Textbox> registrationEmail;
+    std::unique_ptr<Button> okBtn;
+    std::unique_ptr<Button> cancelBtn;
 };
 
-int main(int argc, char **argv)
+int main()
 {
     // Create the authentication dialog with all its components
-    AuthenticationDialog *dialog = new AuthenticationDialog();
+    std::unique_ptr<AuthenticationDialog> dialog = std::make_unique<AuthenticationDialog>();
 
     // Simulate user interaction by clicking the checkboxes, filling
     // in fields, and clicking the buttons.
@@ -156,9 +162,6 @@ int main(int argc, char **argv)
     dialog->loginPassword->keypress();
     dialog->loginPassword->click();
     dialog->okBtn->click();
-
-    // Clean up the memory allocated for the dialog and all its components
-    delete dialog;
 
     return 0;
 }

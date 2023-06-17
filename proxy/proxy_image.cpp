@@ -4,6 +4,7 @@
 class Image
 {
 public:
+    virtual ~Image() = default;
     virtual void display() = 0;
 };
 

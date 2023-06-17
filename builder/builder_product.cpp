@@ -1,6 +1,6 @@
 #include <iostream>
+#include <memory>
 #include <string>
-#include <vector>
 
 class Product
 {
@@ -34,76 +34,72 @@ public:
 class Builder
 {
 public:
-    virtual ~Builder()
-    {
-    }
+    virtual ~Builder() = default;
     virtual void buildPartA() = 0;
     virtual void buildPartB() = 0;
     virtual void buildPartC() = 0;
-    virtual Product *getProduct() = 0;
+    virtual std::unique_ptr<Product> getProduct() = 0;
 };
 
 class ConcreteBuilder1 : public Builder
 {
 private:
-    Product *product;
+    std::unique_ptr<Product> product;
 
 public:
-    ConcreteBuilder1()
+    ConcreteBuilder1() : product(std::make_unique<Product>())
     {
-        product = new Product();
     }
 
-    void buildPartA()
+    void buildPartA() override
     {
         product->setPartA("PartA1");
     }
 
-    void buildPartB()
+    void buildPartB() override
     {
         product->setPartB("PartB1");
     }
 
-    void buildPartC()
+    void buildPartC() override
     {
         product->setPartC("PartC1");
     }
 
-    Product *getProduct()
+    std::unique_ptr<Product> getProduct() override
     {
-        return product;
+        return std::move(product);
     }
 };
 
 class ConcreteBuilder2 : public Builder
 {
 private:
-    Product *product;
+    std::unique_ptr<Product> product;
 
 public:
-    ConcreteBuilder2()
+    ConcreteBuilder2() : product(std::make_unique<Product>())
     {
-        product = new Product();
     }
 
-    void buildPartA()
+    void buildPartA() override
     {
         product->setPartA("PartA2");
     }
 
-    void buildPartB()
+    void buildPartB() override
     {
         product->setPartB("PartB2");
     }
 
-    void buildPartC()
+    void buildPartC() override
     {
         product->setPartC("PartC2");
     }
 
-    Product *getProduct()
+    std::unique_ptr<Product> getProduct() override
     {
-        return product;
+        return std::move(product);
     }
 };
 
@@ -133,25 +129,19 @@ public:
 
 int main()
 {
-    Director *director = new Director();
-    Builder *builder1 = new ConcreteBuilder1();
-    Builder *builder2 = new ConcreteBuilder2();
+    Director director;
+    std::unique_ptr<Builder> builder1 = std::make_unique<ConcreteBuilder1>();
+    std::unique_ptr<Builder> builder2 = std::make_unique<ConcreteBuilder2>();
 
-    director->setBuilder(builder1);
-    director->buildMinimalViableProduct();
-    Product *product1 = builder1->getProduct();
+    director.setBuilder(builder1.get());
+    director.buildMinimalViableProduct();
+    std::unique_ptr<Product> product1 = builder1->getProduct();
     product1->show();
 
-    director->setBuilder(builder2);
-    director->buildFullFeaturedProduct();
-    Product *product2 = builder2->getProduct();
+    director.setBuilder(builder2.get());
+    director.buildFullFeaturedProduct();
+    std::unique_ptr<Product> product2 = builder2->getProduct();
     product2->show();
-
-    delete product1;
-    delete product2;
-    delete builder1;
-    delete builder2;
-    delete director;
 
     return 0;
 }
