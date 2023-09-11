@@ -31,5 +31,11 @@
 *.out
 *.app
 
+# Data files
+*.txt
+*.csv
+*.ini
+*.jpg
+
 build/
 .vscode/

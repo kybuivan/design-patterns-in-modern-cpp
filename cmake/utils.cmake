@@ -7,7 +7,8 @@ function(make_executable_folder subfolders)
 
             get_filename_component(_file_name ${_file} NAME )
 
-            set(_project_name "${_file_name}")
+            # Get the file name without extension
+            get_filename_component(_project_name ${_file_name} NAME_WE)
             message(STATUS "  ${_dir}/${_file_name} is going to be built")
 
             add_executable(${_project_name} "${_dir}/${_file_name}")
