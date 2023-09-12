@@ -35,6 +35,11 @@ git clone https://github.com/kybuivan/design-patterns-in-modern-cpp.git
 ## Books
 - C++ Software Design : Design Principles and Patterns for High-Quality Software
 - Design Patterns in Modern C++: Reusable Approaches for Object-Oriented Software Design
+- Design Patterns: Elements of Reusable Object-Oriented Software
+- Head First Design Patterns: A Brain-Friendly Guide
+
+## Links
+- http://www.oodesign.com
 
 ## Contributing
 If you'd like to contribute to this repository, feel free to create a pull request.
