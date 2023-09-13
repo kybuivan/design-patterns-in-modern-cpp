@@ -353,7 +353,7 @@ int main()
     StudentModel model;
     StudentView view(&model);
     StudentController controller(&model, &view);
-    controller.run();
+    //controller.run();
 
     return 0;
 }

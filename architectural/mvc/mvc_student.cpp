@@ -268,7 +268,7 @@ public:
 int main()
 {
     StudentController controller;
-    controller.run();
+    //controller.run();
 
     return 0;
 }

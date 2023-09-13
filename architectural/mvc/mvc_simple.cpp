@@ -64,7 +64,7 @@ public:
 int main()
 {
     Controller controller;
-    controller.run();
+    //controller.run();
 
     return 0;
 }
