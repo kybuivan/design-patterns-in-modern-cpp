@@ -1,4 +1,6 @@
 set(subfolders
+    adr
+    interceptor
     mvc
 )
 

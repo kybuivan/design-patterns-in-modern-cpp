@@ -1,4 +1,6 @@
 set(subfolders
+    active-object
+    balk
 #    join
 )
 
