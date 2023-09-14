@@ -4,36 +4,32 @@
 #include <mutex>
 #include <queue>
 #include <thread>
+#include <vector>
 
 class ActiveObject
 {
 public:
-    ActiveObject() : isRunning(true)
+    ActiveObject() : stop(false)
     {
-        workerThread = std::thread(&ActiveObject::run, this);
+        workerThread = std::thread([this] { this->run(); });
     }
 
     ~ActiveObject()
     {
-        {
-            std::lock_guard<std::mutex> lock(queueMutex);
-            isRunning = false;
-        }
-        condition.notify_one();
+        stop = true;
         workerThread.join();
     }
 
     template <typename Func>
-    std::future<typename std::result_of<Func()>::type> enqueue(Func func)
+    auto enqueue(Func func) -> std::future<typename std::invoke_result<Func>::type>
     {
-        using ReturnType = typename std::result_of<Func()>::type;
-
-        auto promise = std::make_shared<std::promise<ReturnType>>();
-        auto future = promise->get_future();
+        using ReturnType = typename std::invoke_result<Func>::type;
+        auto task = std::make_shared<std::packaged_task<ReturnType()>>(func);
+        auto future = task->get_future();
 
         {
-            std::lock_guard<std::mutex> lock(queueMutex);
-            methodQueue.push([func, promise]() { promise->set_value(func()); });
+            std::lock_guard<std::mutex> lock(mutex);
+            tasks.push([task]() { (*task)(); });
         }
 
         condition.notify_one();
@@ -41,34 +37,32 @@ public:
     }
 
 private:
-    std::thread workerThread;
-    std::queue<std::function<void()>> methodQueue;
-    std::mutex queueMutex;
-    std::condition_variable condition;
-    bool isRunning;
-
     void run()
     {
-        while (true)
+        while (!stop)
         {
-            std::function<void()> method;
-
+            std::function<void()> task;
             {
-                std::unique_lock<std::mutex> lock(queueMutex);
-                condition.wait(lock, [this] { return !methodQueue.empty() || !isRunning; });
-
-                if ((!isRunning && methodQueue.empty()))
+                std::unique_lock<std::mutex> lock(mutex);
+                condition.wait(lock, [this] { return stop || !tasks.empty(); });
+                if (!tasks.empty())
                 {
-                    break;
+                    task = std::move(tasks.front());
+                    tasks.pop();
                 }
-
-                method = methodQueue.front();
-                methodQueue.pop();
             }
-
-            method();
+            if (task)
+            {
+                task();
+            }
         }
     }
+
+    std::thread workerThread;
+    std::mutex mutex;
+    std::condition_variable condition;
+    std::queue<std::function<void()>> tasks;
+    bool stop;
 };
 
 int main()
@@ -76,17 +70,19 @@ int main()
     ActiveObject activeObject;
 
     auto future1 = activeObject.enqueue([]() {
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        return "Task 1 completed.";
+        std::cout << "Task 1 executed." << std::endl;
+        return 42;
     });
 
     auto future2 = activeObject.enqueue([]() {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        return "Task 2 completed.";
+        std::cout << "Task 2 executed." << std::endl;
+        return 100;
     });
 
-    std::cout << future1.get() << std::endl;
-    std::cout << future2.get() << std::endl;
+    //std::this_thread::sleep_for(std::chrono::seconds(2));
+
+    std::cout << "Result of Task 1: " << future1.get() << std::endl;
+    std::cout << "Result of Task 2: " << future2.get() << std::endl;
 
     return 0;
 }
