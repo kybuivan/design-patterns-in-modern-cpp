@@ -1,5 +1,6 @@
 set(subfolders
     adr
+    binding-properties
     interceptor
     mvc
     service-locator
