@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <memory> // Include for std::shared_ptr
 #include <string>
 
 class Texture
@@ -39,24 +40,24 @@ public:
 class TextureFactory
 {
 private:
-    std::map<std::string, Texture *> textures;
+    std::map<std::string, std::shared_ptr<Texture>> textures;
 
 public:
-    Texture *getTexture(std::string textureType)
+    std::shared_ptr<Texture> getTexture(std::string textureType)
     {
         if (textures.find(textureType) == textures.end())
         {
             if (textureType == "Wood")
             {
-                textures[textureType] = new WoodTexture();
+                textures[textureType] = std::make_shared<WoodTexture>();
             }
             else if (textureType == "Metal")
             {
-                textures[textureType] = new MetalTexture();
+                textures[textureType] = std::make_shared<MetalTexture>();
             }
             else if (textureType == "Grass")
             {
-                textures[textureType] = new GrassTexture();
+                textures[textureType] = std::make_shared<GrassTexture>();
             }
         }
 
@@ -68,10 +69,10 @@ int main()
 {
     TextureFactory factory;
 
-    Texture *woodTexture = factory.getTexture("Wood");
-    Texture *metalTexture = factory.getTexture("Metal");
-    Texture *grassTexture = factory.getTexture("Grass");
-    Texture *anotherWoodTexture = factory.getTexture("Wood");
+    auto woodTexture = factory.getTexture("Wood");
+    auto metalTexture = factory.getTexture("Metal");
+    auto grassTexture = factory.getTexture("Grass");
+    auto anotherWoodTexture = factory.getTexture("Wood");
 
     woodTexture->render();
     metalTexture->render();

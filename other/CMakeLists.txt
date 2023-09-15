@@ -1,8 +1,5 @@
 set(subfolders
-    adr
-    interceptor
-    mvc
-    service-locator
+    dependency-injection
 )
 
 make_executable_folder("${subfolders}")

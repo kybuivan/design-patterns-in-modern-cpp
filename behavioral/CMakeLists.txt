@@ -1,4 +1,5 @@
 set(subfolders
+    chain-of-responsibility
     command
     iterator
     mediator

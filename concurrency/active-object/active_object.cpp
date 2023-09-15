@@ -24,6 +24,13 @@ public:
     auto enqueue(Func func) -> std::future<typename std::invoke_result<Func>::type>
     {
         using ReturnType = typename std::invoke_result<Func>::type;
+
+        // Check if the active object is stopped
+        if (stop)
+        {
+            throw std::runtime_error("Active Object has been stopped.");
+        }
+
         auto task = std::make_shared<std::packaged_task<ReturnType()>>(func);
         auto future = task->get_future();
 
@@ -67,22 +74,22 @@ private:
 
 int main()
 {
-    ActiveObject activeObject;
+    //ActiveObject activeObject;
 
-    auto future1 = activeObject.enqueue([]() {
-        std::cout << "Task 1 executed." << std::endl;
-        return 42;
-    });
+    //auto future1 = activeObject.enqueue([]() {
+    //    std::cout << "Task 1 executed." << std::endl;
+    //    return 42;
+    //});
 
-    auto future2 = activeObject.enqueue([]() {
-        std::cout << "Task 2 executed." << std::endl;
-        return 100;
-    });
+    //auto future2 = activeObject.enqueue([]() {
+    //    std::cout << "Task 2 executed." << std::endl;
+    //    return 100;
+    //});
 
     //std::this_thread::sleep_for(std::chrono::seconds(2));
 
-    std::cout << "Result of Task 1: " << future1.get() << std::endl;
-    std::cout << "Result of Task 2: " << future2.get() << std::endl;
+    //std::cout << "Result of Task 1: " << future1.get() << std::endl;
+    //std::cout << "Result of Task 2: " << future2.get() << std::endl;
 
     return 0;
 }
