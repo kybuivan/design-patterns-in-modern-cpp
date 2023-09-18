@@ -1,8 +1,10 @@
 set(subfolders
     adapter
     bridge
+    delegation
     composite
     decorator
+    extension-object
     facade
     flyweight
     proxy
