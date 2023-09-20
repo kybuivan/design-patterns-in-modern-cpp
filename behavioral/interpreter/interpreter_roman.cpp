@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <vector>
 
 class Context
@@ -177,26 +178,19 @@ int main()
     Context context(roman);
 
     // Build the 'parse tree'
-    std::vector<Expression *> tree;
-    tree.push_back(new ThousandExpression());
-    tree.push_back(new HundredExpression());
-    tree.push_back(new TenExpression());
-    tree.push_back(new OneExpression());
-
+    std::vector<std::shared_ptr<Expression>> tree;
+    tree.push_back(std::make_shared<ThousandExpression>());
+    tree.push_back(std::make_shared<HundredExpression>());
+    tree.push_back(std::make_shared<TenExpression>());
+    tree.push_back(std::make_shared<OneExpression>());
     // Interpret
     for (auto it = tree.begin(); it != tree.end(); ++it)
     {
-        Expression *exp = *it;
+        auto exp = *it;
         exp->interpret(context);
     }
 
     std::cout << roman << " = " << context.getOutput() << std::endl;
-
-    // Clean up allocated memory
-    for (auto it = tree.begin(); it != tree.end(); ++it)
-    {
-        delete *it;
-    }
 
     return 0;
 }
