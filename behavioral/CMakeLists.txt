@@ -1,6 +1,7 @@
 set(subfolders
     chain-of-responsibility
     command
+    interpreter
     iterator
     mediator
     memento
